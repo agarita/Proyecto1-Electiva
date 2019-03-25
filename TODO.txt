@@ -1,0 +1,40 @@
+TODO:
+Documentación
++ ¿En donde hosteamos el backend?
++ UX, boceto de la interfaz.
++ UI, prototipo.
++ Diagrama UML y explicación en prosa.
++ Descripción de web services.
++ Interacción con Facebook.
+
+Aplicación
++ App movil
+    * Manejo de usuarios.
+        * Registro de nuevos usuarios.
+	    * E-mail.
+	    * Facebook.
+	* Login de usuarios.
+	* Recuperar contraseña.
+    * Manejo de restaurantes.
+	* Listar restaurantes en mapa.
+	* Listar restaurantes en modo lista.
+	* Detalle de restaurante.
+	* Calificar restaurante.
+	* Agregar foto a restaurante.
+	* Comentar restaurante.
+	* Agregar restaurante.
+    * Busqueda de restaurantes.
+	* por tipos de comida.
+	* por precios.
+	* por kilometros a la redonde de una ubicación.
+	* por nombre.
+	* por cantidad de estrellas.
++ Backend
+    * Autenticación y autorización.
+	* Login para administradores.
+    * Manejo de restaurantes.
+	* Ver listado de restaurantes.
+	* Detalle de restaurante.
+	* Crear, eliminar, modificar y actualizar restaurantes.
+    * Manejo de usuarios.
+	* Ver lista de usuarios.
