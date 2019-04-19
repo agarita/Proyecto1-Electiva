@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Ingresar">
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/lblTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="75dp"
+            android:text="@string/bienvenido"
+            android:textSize="45sp" />
+
+        <EditText
+            android:id="@+id/txtUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblTitulo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:ems="10"
+            android:hint="@string/usuario"
+            android:inputType="textPersonName" />
+        <EditText
+            android:id="@+id/txtPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtUser"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:hint="@string/contrase_a"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/btnIngresar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtPassword"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:onClick="onBtnIngresarClicked"
+            android:text="@string/ingresar" />
+
+        <Button
+            android:id="@+id/btnIngresarFB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnIngresar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:onClick="onBtnIngresarFBClicked"
+            android:text="@string/ingresarFB" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnRegistarse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/registrarse"
+                android:onClick="onBtnRegistrarseClicked"/>
+
+            <Button
+                android:id="@+id/btnRecuperarPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recuperarPass"
+                android:onClick="onBtnRecuperarPassClicked"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>
