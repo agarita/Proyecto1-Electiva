@@ -9,11 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Configuracion"></activity>
-        <activity android:name=".Perfil" />
-        <activity android:name=".Busca" />
-        <activity android:name=".Mapa" />
-        <activity android:name=".Lista" />
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".Fragment_Configuracion" />
+        <activity android:name=".Fragment_Perfil" />
+        <activity android:name=".Fragment_Busca" />
+        <activity android:name=".Fragment_Mapa" />
+        <activity android:name=".Fragment_Lista" />
         <activity android:name=".Recuperar" />
         <activity android:name=".Registrar" />
         <activity android:name=".Ingresar">

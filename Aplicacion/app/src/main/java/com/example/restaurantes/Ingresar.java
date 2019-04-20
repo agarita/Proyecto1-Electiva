@@ -15,6 +15,7 @@ public class Ingresar extends AppCompatActivity {
     EditText pass;
 
     public boolean verificar(){
+        //TODO
         return true;
     }
 
@@ -23,9 +24,9 @@ public class Ingresar extends AppCompatActivity {
             Toast.makeText(this, "No ha ingresado un usuario y/o contraseña.", Toast.LENGTH_SHORT).show();
         else if(verificar()){
             //
-            // Revisa que la información sea correcta
+            // TODO Revisa que la información sea correcta
             //
-            Intent intent = new Intent(this, Lista.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
         else

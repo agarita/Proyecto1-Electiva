@@ -50,12 +50,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cambiar imagen"/>
-                <Spinner
-                    android:id="@+id/spnEdad"
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    ></Spinner>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Edad: "/>
+                    <Spinner
+                        android:id="@+id/spnEdad"
+                        android:layout_gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        ></Spinner>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
