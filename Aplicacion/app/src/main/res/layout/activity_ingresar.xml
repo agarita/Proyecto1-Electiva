@@ -37,7 +37,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:ems="10"
-            android:hint="@string/usuario"
+            android:hint="Correo"
             android:inputType="textPersonName" />
         <EditText
             android:id="@+id/txtPassword"

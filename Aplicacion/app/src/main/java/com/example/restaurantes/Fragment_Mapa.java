@@ -180,7 +180,6 @@ public class Fragment_Mapa extends Fragment {
                     .setIcon(android.R.drawable.ic_dialog_info)
                     .show();//*/
         }
-
         return true;
     }
 

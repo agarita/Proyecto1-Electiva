@@ -36,33 +36,38 @@ public class MainActivity extends AppCompatActivity {
                         fragment_nuevo = new Fragment_Mapa().newInstance();
                         setFragment(fragment_nuevo);
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
+                        getSupportActionBar().setTitle("Mapa Restaurantes");
                         return true;
 
                     case R.id.nav_lista:
-                        mainNav.setItemBackgroundResource(R.color.colorMapa);
+                        mainNav.setItemBackgroundResource(R.color.colorLista);
                         fragment_nuevo = new Fragment_Lista().newInstance();
                         setFragment(fragment_nuevo);
-                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorLista)));
+                        getSupportActionBar().setTitle("Lista Restaurantes");
                         return true;
 
                     case R.id.nav_busca:
-                        mainNav.setItemBackgroundResource(R.color.colorMapa);
+                        mainNav.setItemBackgroundResource(R.color.colorBusqueda);
                         fragment_nuevo = new Fragment_Busca().newInstance();
                         setFragment(fragment_nuevo);
-                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorBusqueda)));
+                        getSupportActionBar().setTitle("Búsqueda Restaurantes");
                         return true;
 
                     case R.id.nav_perfil:
-                        mainNav.setItemBackgroundResource(R.color.colorMapa);
+                        mainNav.setItemBackgroundResource(R.color.colorPerfil);
                         fragment_nuevo = new Fragment_Perfil().newInstance();
                         setFragment(fragment_nuevo);
-                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPerfil)));
+
                         return true;
-                    case R.id.nav_configuraciones:
-                        mainNav.setItemBackgroundResource(R.color.colorMapa);
+                    case R.id.nav_acerca_de:
+                        mainNav.setItemBackgroundResource(R.color.colorAcercaDe);
                         fragment_nuevo = new Fragment_Acerca_De();
                         setFragment(fragment_nuevo);
-                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorAcercaDe)));
+                        getSupportActionBar().setTitle("Acerca de");
                         return true;
                     default:
                         return false;

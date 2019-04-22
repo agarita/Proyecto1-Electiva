@@ -28,9 +28,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,23 +49,73 @@ public class Registrar extends AppCompatActivity {
     Pattern pattern;
     String path_portada;
 
-    private static final int SELECT_PICTURE=3513;
-    private static final int PERMISSION_REQUEST_CODE=5468;
+    private static final int SELECT_PICTURE = 3513;
+    private static final int PERMISSION_REQUEST_CODE = 5468;
 
-    public void onBtnNextClicked(View view){
-        if(user.getText().toString().matches("") || pass.getText().toString().matches("")
-            || passConf.getText().toString().matches("") || correo.getText().toString().matches(""))
+    public void onBtnNextClicked(View view) throws Exception {
+        if (user.getText().toString().matches("") || pass.getText().toString().matches("")
+                || passConf.getText().toString().matches("") || correo.getText().toString().matches(""))
             Toast.makeText(this, "No ha ingresado alguno de los datos correspondientes.", Toast.LENGTH_SHORT).show();
-        else if(!pass.getText().toString().matches(passConf.getText().toString()))
+        else if (!pass.getText().toString().matches(passConf.getText().toString()))
             Toast.makeText(this, "Las contraseñas dadas son diferentes.", Toast.LENGTH_SHORT).show();
-        else if(!pattern.matcher(correo.getText().toString()).matches())
+        else if (!pattern.matcher(correo.getText().toString()).matches())
             Toast.makeText(this, "El correo dado no es válido.", Toast.LENGTH_SHORT).show();
-        else{
-            //
-            // TODO Aquí se mete en la BD al nuevo usuario
-            //
-            this.finish();
+        else if (pass.length()<6)
+            Toast.makeText(this, "La contraseña debe contener 6 digitos o más.", Toast.LENGTH_SHORT).show();
+        else {
+            Conexion conexion = new Conexion();
+            String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users.json", "GET").get();
+            String correo = this.correo.getText().toString().trim();
+
+            if (!UserExist(result, correo)) {
+                //Crear cuenta
+                if (RegistrarUsuarioBD()) {
+                    Toast.makeText(this, "Usuario registrado exitosamente", Toast.LENGTH_LONG).show();
+                    this.finish();
+                } else
+                    Toast.makeText(this, "Error no se pudo registrar el usuario", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Error: Ya existe un correo igual registrado", Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    private boolean UserExist(String jsonDatos,String correo) throws JSONException {
+        JSONArray datos = new JSONArray(jsonDatos);
+
+        for(int i = 0; i < datos.length(); i++){
+            JSONObject elemento = datos.getJSONObject(i);
+            if(elemento.getString("email").equals(correo)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    private boolean RegistrarUsuarioBD() throws Exception {
+        String mail = this.correo.getText().toString();
+        String nick = this.user.getText().toString();
+        String password = this.pass.getText().toString();
+        String password_confirmation = this.passConf.getText().toString();
+        if(!mail.isEmpty() && !nick.isEmpty() && !password.isEmpty() && !password_confirmation.isEmpty() && password.equals(password_confirmation)){
+            Conexion conexion = new Conexion();
+            Crypto crypto=new Crypto();
+            JSONObject json_parametros = new JSONObject();
+            json_parametros.put("name",nick);
+            json_parametros.put("email",mail);
+            json_parametros.put("password",crypto.encrypt(password));
+            //json_parametros.put("password_confirmation",password_confirmation);
+            json_parametros.put("url_imagen","");
+            String datos="{\"user\":"+json_parametros.toString()+"}";
+            String  result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users","POST",datos/*json_parametros.toString()*/).get();
+
+            if(result.equals("Created")) {
+               return true;
+            }
+        }
+        return false;
     }
 
     public void llenarSpnEdad(){

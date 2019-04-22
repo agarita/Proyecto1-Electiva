@@ -19,7 +19,7 @@
         android:icon="@android:drawable/ic_menu_gallery"
         android:title="Perfil" />
     <item
-        android:id="@+id/nav_configuraciones"
+        android:id="@+id/nav_acerca_de"
         android:icon="@android:drawable/ic_dialog_info"
         android:title="Acerca de" />
 </menu>

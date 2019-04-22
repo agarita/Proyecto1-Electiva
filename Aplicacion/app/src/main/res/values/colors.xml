@@ -6,5 +6,9 @@
 
     <color name="colorBlanco">#ffffff</color>
     <color name="colorBlancoTrans">#80ffffff</color>
-    <color name="colorMapa">#6486ea</color>
+    <color name="colorMapa">#1ca0ff</color>
+    <color name="colorLista">#ffa41c</color>
+    <color name="colorBusqueda">#16c400</color>
+    <color name="colorPerfil">#ff143b</color>
+    <color name="colorAcercaDe">#96bfce</color>
 </resources>
