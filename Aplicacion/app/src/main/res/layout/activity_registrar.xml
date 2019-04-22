@@ -30,23 +30,25 @@
         <LinearLayout
             android:id="@+id/lyImg"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:layout_below="@id/lblTitulo"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imagen"
-                android:layout_width="50dp"
+                android:id="@+id/imagenUsuario"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 app:srcCompat="@android:drawable/ic_menu_gallery" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:orientation="vertical">
                 <Button
                     android:id="@+id/btnAgregarImg"
+                    android:onClick="onBtnCambiarImagen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cambiar imagen"/>

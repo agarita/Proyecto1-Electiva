@@ -36,9 +36,9 @@ public class Fragment_Mapa extends Fragment {
     private GoogleMap googleMap;
     LocationManager locationManager;
     LocationListener locationListener;
-    
 
-    public static Fragment_Mapa newInstance() {
+
+    public static Fragment_Mapa newInstance(/*TODO Recibir datos necesarios*/) {
         Fragment_Mapa fragment = new Fragment_Mapa();
         // TODO recibir datos necesarios
         return fragment;
