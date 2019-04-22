@@ -25,6 +25,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:inputType="text"
             android:ems="10"
             android:hint="Buscar"
             android:imeOptions="actionDone"
@@ -41,14 +42,14 @@
 
         <TextView
             android:id="@+id/lbDistacia"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtBuscar"
             android:text="Rango: "/>
 
         <TextView
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="15dp"
             android:id="@+id/lbDistaciaValor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,14 +65,14 @@
 
         <TextView
             android:id="@+id/lbCosto"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/seekDistanciaBusqueda"
             android:text="Costo: "/>
 
         <TextView
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="15dp"
             android:id="@+id/lbCostoValor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,7 +86,45 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/lbCostoValor"/>
 
+        <TextView
+            android:id="@+id/lbEstrellas"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seekCosto"
+            android:text="Calificación: "/>
 
+        <TextView
+            android:layout_marginTop="15dp"
+            android:id="@+id/lbEstrellaValor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seekCosto"
+            android:layout_toEndOf="@+id/lbEstrellas"
+            android:text="0" />
+
+        <SeekBar
+            android:id="@+id/seekEstrellas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lbEstrellas"/>
+
+        <TextView
+            android:id="@+id/lbTipoComida"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seekEstrellas"
+            android:text="Tipo de comida: "/>
+
+        <Spinner
+            android:id="@+id/spTipoComida"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seekEstrellas"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/lbTipoComida"
+            android:spinnerMode="dropdown" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

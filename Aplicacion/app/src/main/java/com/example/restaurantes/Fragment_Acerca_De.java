@@ -1,18 +1,16 @@
 package com.example.restaurantes;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class Fragment_Configuracion extends Fragment {
+public class Fragment_Acerca_De extends Fragment {
     View rootView;
 
-    public static Fragment_Configuracion newInstance() {
-        Fragment_Configuracion fragment = new Fragment_Configuracion();
+    public static Fragment_Acerca_De newInstance() {
+        Fragment_Acerca_De fragment = new Fragment_Acerca_De();
         // TODO recibir datos necesarios
         return fragment;
     }
@@ -21,7 +19,7 @@ public class Fragment_Configuracion extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView= inflater.inflate(R.layout.fragment_configuracion, container, false);
+        rootView= inflater.inflate(R.layout.fragment_acerca_de, container, false);
 
         return rootView;
     }

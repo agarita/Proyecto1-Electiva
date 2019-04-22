@@ -1,15 +1,12 @@
 package com.example.restaurantes;
 
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.nav_configuraciones:
                         mainNav.setItemBackgroundResource(R.color.colorMapa);
-                        fragment_nuevo = new Fragment_Configuracion();
+                        fragment_nuevo = new Fragment_Acerca_De();
                         setFragment(fragment_nuevo);
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
                         return true;

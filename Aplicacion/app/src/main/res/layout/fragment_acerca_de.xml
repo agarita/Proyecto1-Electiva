@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_Configuracion">
+    tools:context=".Fragment_Acerca_De">
     <RelativeLayout
         android:id="@+id/relativeLayout4"
         android:layout_width="0dp"
@@ -25,7 +25,17 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:text="Configuracion"
+            android:text="Versión 1.0"
+            android:textSize="33sp" />
+
+        <TextView
+            android:id="@+id/lbDesarrolladores"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblTitulo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="Desarrolladores:\nAlejandro Garita Cruz\nArlem Brenes Aguilar\nFabián Piedra Herrera"
             android:textSize="33sp" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
