@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Restaurantes</string>
+    <string name="facebook_app_id">2649377325134101</string>
+    <string name="fb_login_protocol_scheme">fb2649377325134101</string>
     <string name="usuario">Usuario</string>
     <string name="contrase_a">Contraseña</string>
     <string name="bienvenido">¡Bienvenido!</string>
