@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -58,7 +57,7 @@ public class detalleRestaurante extends Fragment {
 
         }
 
-        ImageView imgFoto = rootView.findViewById(R.id.imgRestaurante);
+        //ImageView imgFoto = rootView.findViewById(R.id.imgRestaurante);
         TextView lbNombre = rootView.findViewById(R.id.lblNombreRest);
         TextView lbHorario = rootView.findViewById(R.id.txtHorario);
         TextView lbCorreo = rootView.findViewById(R.id.txtCorreo);
@@ -67,7 +66,7 @@ public class detalleRestaurante extends Fragment {
         TextView lbTipoComida = rootView.findViewById(R.id.txtTipoComida);
         TextView lbCalificacion = rootView.findViewById(R.id.txtCalificacion);
 
-        Button btnAgregarImg=rootView.findViewById(R.id.btnAgregarImg);
+        //Button btnAgregarImg=rootView.findViewById(R.id.btnAgregarImg);
         Button btnVerMapa=rootView.findViewById(R.id.btnVerMapa);
 
         lbNombre.setText(Nombre);

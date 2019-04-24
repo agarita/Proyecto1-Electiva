@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/lyImg"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="Cambiar imagen"/>
-        </LinearLayout>
+        </LinearLayout>-->
 
 
         <EditText
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/seekCosto"
-            android:text="Tipos de comida: "/>
+            android:text="Tipo de comida: "/>
 
         <Spinner
             android:id="@+id/spTipoComida"
@@ -104,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/spTipoComida"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal">
 
             <TextView
@@ -170,6 +171,15 @@
                 android:lines="7"
                 android:maxLines="7" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnRegistrarRestaurante"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lytHorario"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:text="Registrar"/>
 
 
 

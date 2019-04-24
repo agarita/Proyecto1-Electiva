@@ -303,8 +303,10 @@ public class Fragment_Mapa extends Fragment {
                     .setMessage("¿Desea agregar un nueva restaurante en la ubicación actual?")
                     .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            //Todo abrir ventana para agregar restaurtante
-                            //Todo pasar ubicacion actual
+                            Intent i= new Intent(getContext(),Registro_Restaurante.class);
+                            i.putExtra("getLatitud",marker.getPosition().latitude);
+                            i.putExtra("getLongitud",marker.getPosition().longitude);
+                            startActivity(i);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {

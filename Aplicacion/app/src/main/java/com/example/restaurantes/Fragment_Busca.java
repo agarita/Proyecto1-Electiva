@@ -1,10 +1,8 @@
 package com.example.restaurantes;
 
-import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +16,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 public class Fragment_Busca extends Fragment {
     View rootView;
 
@@ -27,6 +33,9 @@ public class Fragment_Busca extends Fragment {
         return fragment;
     }
 
+    Spinner sItems;
+    List<String> spinnerArray;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -34,7 +43,15 @@ public class Fragment_Busca extends Fragment {
         rootView= inflater.inflate(R.layout.fragment_busca, container, false);
 
         inicializarSeekBars();
-        inicializarSpinnerTiposComidas();
+        try {
+            inicializarSpinnerTiposComidas();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         inicializarTxtBusqueda();
 
         ImageView imgBusqueda = rootView.findViewById(R.id.btnBuscar);
@@ -63,21 +80,28 @@ public class Fragment_Busca extends Fragment {
         });
     }
 
-    private void inicializarSpinnerTiposComidas() {
-        Spinner spTiposComidas =rootView.findViewById(R.id.spTipoComida);
+    private void inicializarSpinnerTiposComidas() throws JSONException, ExecutionException, InterruptedException {
+        //Tipos comida
+        Conexion conexion = new Conexion();
+        String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/foods.json", "GET"/*json_parametros.toString()*/).get();
+        JSONArray datos = new JSONArray(result);
 
-        String[] arrayTiposComida = obtenerTiposComida();
+        spinnerArray =  new ArrayList<String>();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_spinner_item, arrayTiposComida);
+        spinnerArray.add("Todos los tipos");
+
+        for (int i = 0; i < datos.length(); i++) {
+            JSONObject elemento = datos.getJSONObject(i);
+            spinnerArray.add(elemento.getString("foodtype"));
+        }
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                getContext(), android.R.layout.simple_spinner_item, spinnerArray);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spTiposComidas.setAdapter(adapter);
-    }
-
-    private String[] obtenerTiposComida() {
-        //Todo obtener tipos de comida BD
-        String[] arrayTiposComida = new String[]{"Todos los tipos"};
-        return arrayTiposComida;
+        sItems = (Spinner) rootView.findViewById(R.id.spTipoComida);
+        sItems.setAdapter(adapter);
     }
 
     public void inicializarSeekBars(){
@@ -87,7 +111,8 @@ public class Fragment_Busca extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             distaciaSeekbar.setMin(1);
         }
-        distaciaSeekbar.setProgress(1);
+        distaciaSeekbar.setProgress(10);
+        actualizarDistancia(10);
 
         distaciaSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -161,7 +186,10 @@ public class Fragment_Busca extends Fragment {
 
     private void actualizarDistancia(int i){
         TextView txtDistacia= rootView.findViewById(R.id.lbDistaciaValor);
-        txtDistacia.setText(Integer.toString(i) + " KM");
+        if(i==10)
+            txtDistacia.setText("Todo el mundo");
+        else
+            txtDistacia.setText(Integer.toString(i) + " KM");
     }
 
     public void buscar(){

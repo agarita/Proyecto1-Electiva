@@ -25,7 +25,6 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -243,8 +242,8 @@ public class Registrar extends AppCompatActivity {
                 Uri filePath = data.getData();
                 if (null != filePath) {
                     try {
-                        ImageView imgUsuario = findViewById(R.id.imagenUsuario);
-                        imgUsuario.setImageURI(filePath);
+                        //ImageView imgUsuario = findViewById(R.id.imagenUsuario);
+                        //imgUsuario.setImageURI(filePath);
                         path_portada = getFilePath(this, filePath);
                         Log.d("PATH", filePath.getPath());
                     } catch (Exception e) {
@@ -255,10 +254,10 @@ public class Registrar extends AppCompatActivity {
                 if (resultCode != 0) {
                     Bundle extras = data.getExtras();
                     if (null != extras) {
-                        ImageView fotoUsuario = findViewById(R.id.imagenUsuario);
+                        //ImageView fotoUsuario = findViewById(R.id.imagenUsuario);
                         Bitmap imageBitmap = (Bitmap) extras.get("data");
                         //path_portada = getFilePath(this, );
-                        fotoUsuario.setImageBitmap(imageBitmap);
+                        //fotoUsuario.setImageBitmap(imageBitmap);
                     }
                 }
             }

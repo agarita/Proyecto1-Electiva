@@ -24,7 +24,7 @@
             android:text="_NombreRestaurante_"
             android:textSize="35sp" />
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/lytImg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,13 +51,13 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp" />
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/lytCalificacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lytImg"
+            android:layout_below="@id/lblNombreRest"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="55dp">
 
@@ -154,15 +154,15 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
-        <Button
+        <!--<Button
             android:id="@+id/btnAgregarImg"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:layout_below="@id/lytImg"
+            android:layout_below="@id/lblNombreRest"
             android:layout_alignParentRight="true"
             android:layout_marginTop="55dp"
             android:layout_marginRight="20dp"
-            android:text="Agregar\nImagen" />
+            android:text="Agregar\nImagen" />-->
 
         <LinearLayout
             android:id="@+id/lytTelefono"
@@ -215,9 +215,9 @@
             android:id="@+id/btnVerMapa"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
-            android:layout_below="@id/btnAgregarImg"
+            android:layout_below="@id/lblNombreRest"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="135dp"
+            android:layout_marginTop="50dp"
             android:layout_marginRight="20dp"
             android:text="Ver\nMapa" />
 
