@@ -1,5 +1,6 @@
 package com.example.restaurantes;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,9 +27,14 @@ import java.util.concurrent.ExecutionException;
 public class Fragment_Busca extends Fragment {
     View rootView;
 
-    public static Fragment_Busca newInstance() {
+    static String NombreUsuario,IdUsuario;
+
+    String Distancia=null,Precio=null,ClaveBusqueda=null,Calificacion=null, TipoComida=null;
+
+    public static Fragment_Busca newInstance(String nombreUsuario,String idUsuario) {
         Fragment_Busca fragment = new Fragment_Busca();
-        // TODO recibir datos necesarios
+        NombreUsuario=nombreUsuario;
+        IdUsuario=idUsuario;
         return fragment;
     }
 
@@ -102,6 +107,10 @@ public class Fragment_Busca extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sItems = (Spinner) rootView.findViewById(R.id.spTipoComida);
         sItems.setAdapter(adapter);
+
+
+        //TODO cambiar tipo comida
+        //TipoComida
     }
 
     public void inicializarSeekBars(){
@@ -147,11 +156,12 @@ public class Fragment_Busca extends Fragment {
 
         //Costo de estrellas
         final SeekBar estrellasSeekbar = rootView.findViewById(R.id.seekEstrellas);
-        estrellasSeekbar.setMax(5);
+        estrellasSeekbar.setMax(6);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             estrellasSeekbar.setMin(1);
         }
-        estrellasSeekbar.setProgress(1);
+        estrellasSeekbar.setProgress(6);
+        actualizarEstrellas(6);
 
         estrellasSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -167,7 +177,10 @@ public class Fragment_Busca extends Fragment {
 
     private void actualizarEstrellas(int i) {
         TextView txtEstrellas = rootView.findViewById(R.id.lbEstrellaValor);
-        txtEstrellas.setText(Integer.toString(i));
+        if(i==6)
+            txtEstrellas.setText("Todas");
+        else
+            txtEstrellas.setText(Integer.toString(i));
     }
 
     private void actualizarCosto(int i) {
@@ -193,7 +206,15 @@ public class Fragment_Busca extends Fragment {
     }
 
     public void buscar(){
-        Toast.makeText(getContext(),"- WIP -",Toast.LENGTH_LONG).show();
+        Intent i =new Intent(getContext(),ResultadoBusqueda.class);
+        i.putExtra("getNombreUsuario",NombreUsuario);
+        i.putExtra("getidUsuario",IdUsuario);
+        i.putExtra("getIdTipoComida",TipoComida);
+        i.putExtra("getClaveBusqueda",ClaveBusqueda);
+        i.putExtra("getDistacia",Distancia);
+        i.putExtra("getEstrellas",Calificacion);
+        i.putExtra("getPrecio",Precio);
+        startActivity(i);
     }
 
 }

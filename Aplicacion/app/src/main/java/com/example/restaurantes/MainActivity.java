@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_busca:
                         mainNav.setItemBackgroundResource(R.color.colorBusqueda);
-                        fragment_nuevo = new Fragment_Busca().newInstance();
+                        fragment_nuevo = new Fragment_Busca().newInstance(NombreUsuario,IdUsuario);
                         setFragment(fragment_nuevo);
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorBusqueda)));
                         getSupportActionBar().setTitle("Búsqueda Restaurantes");

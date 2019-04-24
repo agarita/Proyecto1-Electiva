@@ -44,6 +44,7 @@
 
         <activity android:name=".MainActivity" />
         <activity android:name=".Recuperar" />
+        <activity android:name=".ResultadoBusqueda" />
         <activity android:name=".Registrar" />
         <activity android:name=".Ingresar">
             <intent-filter>
