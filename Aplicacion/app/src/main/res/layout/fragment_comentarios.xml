@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Comentarios">
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout6"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/lblComentarios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp"
+            android:text="Comentarios"
+            android:textSize="35sp" />
+
+        <LinearLayout
+            android:id="@+id/lytComentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lblComentarios"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txtComentario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="100"
+                android:gravity="top|left"
+                android:lines="10"
+                android:maxLines="15" />
+
+            <Button
+                android:id="@+id/btnEnviar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/ic_menu_send"
+                android:gravity="bottom" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/listaComentarios"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/lytComentario" />
+
+        <TextView
+            android:id="@+id/HayComentarios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Aún no hay comentarios"
+            android:textSize="20sp"/>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
