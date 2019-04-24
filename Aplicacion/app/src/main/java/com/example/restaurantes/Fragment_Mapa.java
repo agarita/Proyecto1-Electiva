@@ -4,18 +4,15 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +23,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -37,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 import java.util.concurrent.ExecutionException;
 
 public class Fragment_Mapa extends Fragment {
@@ -47,72 +42,9 @@ public class Fragment_Mapa extends Fragment {
     private GoogleMap googleMap;
     LocationManager locationManager;
     LocationListener locationListener;
+    ArrayList<DatosRestaurante> restaurantesObtenidos;
+    ArrayList<Marker> marcadoresMapa = new ArrayList<>();
 
-    private class DatosRestaurante{
-        private double latitud;
-        private double longitud;
-        private String Nombre;
-        private String Horario;
-        private String Telefono;
-        private String Precio;
-        private String TipoComida;
-
-        public double getLatitud() {
-            return latitud;
-        }
-
-        public double getLongitud() {
-            return longitud;
-        }
-
-        public String getNombre() {
-            return Nombre;
-        }
-
-        public String getHorario() {
-            return Horario;
-        }
-
-        public String getTelefono() {
-            return Telefono;
-        }
-
-        public String getPrecio() {
-            return Precio;
-        }
-
-        public String getTipoComida() {
-            return TipoComida;
-        }
-
-        public void setLatitud(double latitud) {
-            this.latitud = latitud;
-        }
-
-        public void setLongitud(double longitud) {
-            this.longitud = longitud;
-        }
-
-        public void setNombre(String nombre) {
-            Nombre = nombre;
-        }
-
-        public void setHorario(String horario) {
-            Horario = horario;
-        }
-
-        public void setTelefono(String telefono) {
-            Telefono = telefono;
-        }
-
-        public void setPrecio(String precio) {
-            Precio = precio;
-        }
-
-        public void setTipoComida(String tipoComida) {
-            TipoComida = tipoComida;
-        }
-    }
 
     public static Fragment_Mapa newInstance(/*TODO Recibir datos necesarios*/) {
         Fragment_Mapa fragment = new Fragment_Mapa();
@@ -224,6 +156,15 @@ public class Fragment_Mapa extends Fragment {
                         @Override
                         public void onMapClick(LatLng point) {
                             googleMap.clear();
+                            try {
+                                AgregarMarcadoresRestaurantes(googleMap);
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                             googleMap.addMarker(new MarkerOptions().position(point));
 
                         }
@@ -236,6 +177,19 @@ public class Fragment_Mapa extends Fragment {
                             return clickEnMarcadorMapa(marker);
                         }
                     });
+
+                    /*googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                        @Override
+                        public void onMapLongClick(LatLng latLng) {
+                            for(Marker marker : marcadoresMapa) {
+                                if(Math.abs(marker.getPosition().latitude - latLng.latitude) < 0.02 && Math.abs(marker.getPosition().longitude - latLng.longitude) < 0.02) {
+                                    marker.showInfoWindow();
+                                    break;
+                                }
+                            }
+
+                        }
+                    });*/
                 }
                 else
                     Toast.makeText(getContext(), "Error no se pudo inicializar el mapa", Toast.LENGTH_LONG).show();
@@ -245,12 +199,19 @@ public class Fragment_Mapa extends Fragment {
 
     private boolean AgregarMarcadoresRestaurantes(GoogleMap googleMap) throws ExecutionException, InterruptedException, JSONException {
 
-        ArrayList<DatosRestaurante> markersArray = ObtenerDatosRestaurantes();
+        if(restaurantesObtenidos==null)
+            restaurantesObtenidos = ObtenerDatosRestaurantes();
 
-        for(int i = 0 ; i < markersArray.size() ; i++) {
-            createMarker(markersArray.get(i).getLatitud(), markersArray.get(i).getLongitud(), markersArray.get(i).getNombre(), "Horario: " +markersArray.get(i).getHorario(), "BD");
+        if(restaurantesObtenidos==null) {
+            Toast.makeText(getContext(), "Error al obtener los restaurantes", Toast.LENGTH_LONG).show();
+            return false;
         }
-        return false;
+        else {
+            for (int i = 0; i < restaurantesObtenidos.size(); i++) {
+                createMarker(restaurantesObtenidos.get(i).getLatitud(), restaurantesObtenidos.get(i).getLongitud(), restaurantesObtenidos.get(i).getNombre(), "Horario: " + restaurantesObtenidos.get(i).getHorario(), "BD");
+            }
+        }
+        return true;
     }
 
     private ArrayList<DatosRestaurante> ObtenerDatosRestaurantes() throws ExecutionException, InterruptedException, JSONException {
@@ -264,8 +225,16 @@ public class Fragment_Mapa extends Fragment {
         for(int i = 0; i < datos.length(); i++){
             JSONObject elemento = datos.getJSONObject(i);
             restaurante=new DatosRestaurante();
-            restaurante.setNombre(elemento.getString(""));
 
+            restaurante.setNombre(elemento.getString("name"));
+            restaurante.setLatitud(Double.valueOf(elemento.getString("latitude")));
+            restaurante.setLongitud(Double.valueOf(elemento.getString("longitude")));
+            restaurante.setHorario(elemento.getString("schedules"));
+            restaurante.setTelefono(elemento.getString("phones_number"));
+            restaurante.setCorreo(elemento.getString("email"));
+            restaurante.setPrecio(elemento.getString("price"));
+            //restaurante.setTipoComida(elemento.getString(""));
+            restaurantesObtenidos.add(restaurante);
         }
         return restaurantesObtenidos;
     }
@@ -277,6 +246,7 @@ public class Fragment_Mapa extends Fragment {
                 .title(title)
                 .snippet(snippet));
         m.setTag(tag);
+        //marcadoresMapa.add(m);
         return m;
     }
 
@@ -291,7 +261,6 @@ public class Fragment_Mapa extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             //Todo abrir ventana para agregar restaurtante
                             //Todo pasar ubicacion actual
-                            Toast.makeText(getContext(),"- WIP - ",Toast.LENGTH_LONG).show();
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
