@@ -22,6 +22,7 @@ public class ResultadoBusqueda extends AppCompatActivity {
     ArrayList<DatosRestaurante> restaurantesObtenidos=new ArrayList<>();
 
     String NombreUsuario,IdUsuario;
+    String Distancia=null,Precio=null,ClaveBusqueda=null,Calificacion=null, TipoComida=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +32,11 @@ public class ResultadoBusqueda extends AppCompatActivity {
         Intent i=getIntent();
         NombreUsuario = i.getExtras().getString("getNombreUsuario");
         IdUsuario = i.getExtras().getString("getidUsuario");
-
-
-
+        TipoComida = i.getExtras().getString("getIdTipoComida");
+        ClaveBusqueda = i.getExtras().getString("getClaveBusqueda");
+        Distancia = i.getExtras().getString("getDistacia");
+        Calificacion = i.getExtras().getString("getEstrellas");
+        Precio = i.getExtras().getString("getPrecio");
 
         try {
             restaurantesObtenidos=ObtenerDatosRestaurantes();
@@ -45,6 +48,7 @@ public class ResultadoBusqueda extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        restaurantesObtenidos=filtrarRestaurantes();
 
 
         if(restaurantesObtenidos!=null) {
@@ -52,6 +56,16 @@ public class ResultadoBusqueda extends AppCompatActivity {
         }
 
 
+    }
+
+    private ArrayList<DatosRestaurante> filtrarRestaurantes() {
+        ArrayList<DatosRestaurante> restaurantes=new ArrayList<>();
+        for(DatosRestaurante restaurante : restaurantesObtenidos){
+            if(ClaveBusqueda!=null && (restaurante.getNombre().toLowerCase().contains(ClaveBusqueda.toLowerCase())))
+                restaurantes.add(restaurante);
+        }
+
+        return restaurantes;
     }
 
     private void poblarListViewRestaurantes(final ArrayList<DatosRestaurante> restaurantesObtenidos) {

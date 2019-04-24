@@ -206,6 +206,11 @@ public class Fragment_Busca extends Fragment {
     }
 
     public void buscar(){
+        EditText clave= rootView.findViewById(R.id.txtBuscar);
+        if(clave.getText().toString().isEmpty())
+            ClaveBusqueda=null;
+        else
+            ClaveBusqueda=clave.getText().toString();
         Intent i =new Intent(getContext(),ResultadoBusqueda.class);
         i.putExtra("getNombreUsuario",NombreUsuario);
         i.putExtra("getidUsuario",IdUsuario);
