@@ -1,8 +1,2 @@
 TODO:
-Documentación
-+ ¿En donde hosteamos el backend?
-+ UX, boceto de la interfaz.
-+ UI, prototipo.
-+ Diagrama UML y explicación en prosa.
-+ Descripción de web services.
-+ Interacción con Facebook.
+Listo :)
