@@ -117,8 +117,8 @@ public class Registrar extends AppCompatActivity {
         String password_confirmation = this.passConf.getText().toString();
         if(!mail.isEmpty() && !nick.isEmpty() && !password.isEmpty() && !password_confirmation.isEmpty() && password.equals(password_confirmation)){
             String nombreFoto=getYear()+getMonth()+getDay()+getHour()+getMinute()+getSecond();
-            uploadImageS3(nombreFoto.replaceAll("\\s",""));
-            String urlImagen = "https://s3-us-west-1.amazonaws.com/apprestaurantes/"/*users/"*/+nombreFoto.replaceAll("\\s","")+".jpg";
+            //uploadImageS3(nombreFoto.replaceAll("\\s",""));
+            //String urlImagen = "https://s3-us-west-1.amazonaws.com/apprestaurantes/"/*users/"*/+nombreFoto.replaceAll("\\s","")+".jpg";
             Conexion conexion = new Conexion();
             Crypto crypto=new Crypto();
             JSONObject json_parametros = new JSONObject();
@@ -126,7 +126,7 @@ public class Registrar extends AppCompatActivity {
             json_parametros.put("dateofbirth","");
             json_parametros.put("email",mail);
             json_parametros.put("password",crypto.encrypt(password));
-            json_parametros.put("url_imagen",urlImagen);
+            json_parametros.put("url_imagen","");
             String datos="{\"user\":"+json_parametros.toString()+"}";
             String  result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users","POST",datos/*json_parametros.toString()*/).get();
 

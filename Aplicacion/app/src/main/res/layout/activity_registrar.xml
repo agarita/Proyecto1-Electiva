@@ -27,7 +27,7 @@
             android:text="Registro"
             android:textSize="45sp" />
 
-        <LinearLayout
+        <!--<LinearLayout
             android:id="@+id/lyImg"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cambiar imagen"/>
-                <!--<LinearLayout
+                <!-<LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -66,17 +66,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         ></Spinner>
-                </LinearLayout>-->
+                </LinearLayout>->
 
             </LinearLayout>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
         <EditText
             android:id="@+id/txtUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lyImg"
+            android:layout_below="@id/lblTitulo"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:ems="10"

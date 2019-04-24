@@ -14,21 +14,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/lblComentarios"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="55dp"
-            android:text="Comentarios"
-            android:textSize="35sp" />
+
 
         <LinearLayout
             android:id="@+id/lytComentario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lblComentarios"
+            android:layout_marginTop="50dp"
             android:orientation="horizontal">
 
             <EditText
@@ -38,7 +30,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_weight="100"
                 android:gravity="top|left"
-                android:lines="10"
                 android:maxLines="15" />
 
             <Button
@@ -59,7 +50,7 @@
             android:layout_below="@id/lytComentario" />
 
         <TextView
-            android:id="@+id/HayComentarios"
+            android:id="@+id/lbNoComentarios"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

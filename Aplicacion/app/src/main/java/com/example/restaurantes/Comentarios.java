@@ -1,108 +1,181 @@
 package com.example.restaurantes;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Comentarios.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Comentarios#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Comentarios extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private View rootView;
+    String id_usuario, id_restaurante;
+    JSONArray TodosComentarios;
+    JSONArray TodosUsuarios;
+    EditText Comentario;
+    TextView labelNoComentarios;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
-
-    public Comentarios() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Comentarios.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Comentarios newInstance(String param1, String param2) {
-        Comentarios fragment = new Comentarios();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        rootView= inflater.inflate(R.layout.fragment_comentarios, container, false);
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            id_usuario=getArguments().getString("getidUsuario");
+            id_restaurante=getArguments().getString("getIdRestaurante");
+        }
+
+        Button btnAgregarComentario=rootView.findViewById(R.id.btnEnviar);
+        Comentario=rootView.findViewById(R.id.txtComentario);
+        labelNoComentarios=rootView.findViewById(R.id.lbNoComentarios);
+
+        btnAgregarComentario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    AgregarComentario();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        ActualizarComentarios();
+        return rootView;
+    }
+
+    private void Actualizar_Datos() {
+        try {
+            Conexion comentariosConexion = new Conexion();
+            String result = comentariosConexion.execute("https://shrouded-savannah-17544.herokuapp.com/feedbacks.json", "GET").get();
+            TodosComentarios = new JSONArray(result);
+
+            Conexion user_extendeds = new Conexion();
+            String result1 = user_extendeds.execute("https://shrouded-savannah-17544.herokuapp.com/users.json", "GET").get();
+            TodosUsuarios = new JSONArray(result1);
+        } catch (InterruptedException e) {
+            Toast.makeText(this.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            Toast.makeText(this.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            Toast.makeText(this.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_comentarios, container, false);
-    }
+    private void ActualizarComentarios() {
+        Actualizar_Datos();
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        JSONArray datosComentarios = TodosComentarios;
+        JSONArray datosUsuarios = TodosUsuarios;
+
+        JSONArray comentariosFiltrados = new JSONArray();
+
+        try {
+            if (datosComentarios !=null) {
+                if (datosComentarios.length() > 0) {
+
+                    for (int i = 0; i < datosComentarios.length(); i++) {
+                        JSONObject elemento = datosComentarios.getJSONObject(i);
+                        if (elemento.getString("restaurant_id").equals(id_restaurante)) {
+                            comentariosFiltrados.put(elemento);
+                        }
+                    }
+
+                    if (comentariosFiltrados != null) {
+                        if (comentariosFiltrados.length() > 0) {
+                            labelNoComentarios.setVisibility(View.INVISIBLE);
+
+                            final ArrayList<String> nicks = new ArrayList<>();
+                            final ArrayList<String> comentarios = new ArrayList<>();
+
+                            JSONObject elemento;
+                            for (int i = 0; i < comentariosFiltrados.length(); i++) {
+                                elemento = comentariosFiltrados.getJSONObject(i);
+
+                                JSONObject usuario;
+                                for (int k = 0; k < datosUsuarios.length(); k++) {
+                                    usuario = datosUsuarios.getJSONObject(k);
+                                    if (elemento.get("user_id").equals(usuario.get("id")))
+                                        nicks.add(usuario.getString("name"));
+                                }
+
+                                comentarios.add(elemento.getString("feedbackuser"));
+                            }
+
+
+
+
+
+                            ListView listaRestaurantes=rootView.findViewById(R.id.listaComentarios);
+
+                            ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_2, android.R.id.text1, nicks) {
+                                @Override
+                                public View getView(int position, View convertView, ViewGroup parent) {
+                                    View view = super.getView(position, convertView, parent);
+                                    TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                                    TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+                                    text1.setText(nicks.get(position));
+                                    text2.setText(comentarios.get(position));
+                                    return view;
+                                }
+                            };
+                            listaRestaurantes.setAdapter(adapter);
+                        } else
+                            labelNoComentarios.setVisibility(View.VISIBLE);
+                    } else
+                        labelNoComentarios.setVisibility(View.VISIBLE);
+                } else
+                    labelNoComentarios.setVisibility(View.VISIBLE);
+            } else
+                labelNoComentarios.setVisibility(View.VISIBLE);
+
+        } catch (JSONException e) {
+            Toast.makeText(this.getContext(), e.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+    private void AgregarComentario() throws JSONException, ExecutionException, InterruptedException {
+        EditText comentario = rootView.findViewById(R.id.txtComentario);
+        String strComentario = comentario.getText().toString();
+
+        if (!strComentario.isEmpty()) {
+                Conexion conexion = new Conexion();
+
+                JSONObject json_parametros = new JSONObject();
+                json_parametros.put("user_id", id_usuario);
+                json_parametros.put("feedbackuser", strComentario);
+                json_parametros.put("restaurant_id", id_restaurante);
+                String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/feedbacks.json", "POST", json_parametros.toString()).get();
+
+                if (result.equals("Created")) {
+                    Toast.makeText(rootView.getContext(), "Se publicó exitosamente el comentario.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(rootView.getContext(), "Ocurrió un error inesperado." + result.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(rootView.getContext(), json_parametros.toString(), Toast.LENGTH_LONG).show();
+                }
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            Toast.makeText(rootView.getContext(), "El comentario no puede estar vacío", Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

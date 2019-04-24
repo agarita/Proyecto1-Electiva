@@ -1,19 +1,20 @@
 package com.example.restaurantes;
 
-import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class Fragment_Perfil extends Fragment {
     View rootView;
+    static String NombreUsuario,Correo;
 
-    public static Fragment_Perfil newInstance() {
+    public static Fragment_Perfil newInstance(String nombreUsuario,String correo) {
         Fragment_Perfil fragment = new Fragment_Perfil();
-        // TODO recibir datos necesarios
+        NombreUsuario=nombreUsuario;
+        Correo=correo;
         return fragment;
     }
 
@@ -22,6 +23,11 @@ public class Fragment_Perfil extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView= inflater.inflate(R.layout.fragment_perfil, container, false);
+        TextView nombre=rootView.findViewById(R.id.txtNombre);
+        TextView correo=rootView.findViewById(R.id.txtCorreo);
+
+        nombre.setText(NombreUsuario);
+        correo.setText(Correo);
 
         return rootView;
     }

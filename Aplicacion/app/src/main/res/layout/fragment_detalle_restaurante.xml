@@ -40,10 +40,10 @@
                 android:layout_marginRight="10dp" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imgRestaurante"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars" />
+                android:background="@android:drawable/ic_menu_gallery" />
 
             <Button
                 android:id="@+id/btnSiguiente"

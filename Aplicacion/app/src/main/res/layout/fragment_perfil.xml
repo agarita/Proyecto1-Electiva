@@ -28,19 +28,19 @@
             android:text="Perfil de usuario"
             android:textSize="45sp" />
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/imagenUsuario"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_below="@id/lblTitulo"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@android:drawable/ic_menu_gallery" />
+            app:srcCompat="@android:drawable/ic_menu_gallery" />-->
 
         <TextView
             android:id="@+id/lblNombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/imagenUsuario"
+            android:layout_below="@id/lblTitulo"
             android:layout_marginTop="50dp"
             android:text="Nombre:"
             android:textSize="25sp"/>
@@ -49,7 +49,7 @@
             android:id="@+id/txtNombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/imagenUsuario"
+            android:layout_below="@id/lblTitulo"
             android:layout_marginTop="50dp"
             android:layout_toRightOf="@id/lblNombre"
             android:text="_Nombre_"

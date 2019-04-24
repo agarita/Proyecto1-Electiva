@@ -46,12 +46,26 @@ public class Fragment_Mapa extends Fragment {
     ArrayList<DatosRestaurante> restaurantesObtenidos;
     ArrayList<Marker> marcadoresMapa = new ArrayList<>();
 
-    static String NombreUsuario;
+    static String NombreUsuario,IdUsuario;
+
+    static Boolean LugarEspecifico=false;
+    static Double Lat,Long;
 
 
-    public static Fragment_Mapa newInstance(String nombreUsuario) {
+    public static Fragment_Mapa newInstance(String nombreUsuario,String idUsuario) {
         Fragment_Mapa fragment = new Fragment_Mapa();
         NombreUsuario=nombreUsuario;
+        IdUsuario=idUsuario;
+        return fragment;
+    }
+
+    public static Fragment_Mapa newInstance(Double Latitud, Double Longitud, String nombreUsuario,String idUsuario) {
+        Fragment_Mapa fragment = new Fragment_Mapa();
+        NombreUsuario=nombreUsuario;
+        IdUsuario=idUsuario;
+        Lat=Latitud;
+        Long=Longitud;
+        LugarEspecifico=true;
         return fragment;
     }
 
@@ -133,11 +147,19 @@ public class Fragment_Mapa extends Fragment {
                             // For showing a move to my location button
                             googleMap.setMyLocationEnabled(true);
 
-                            LatLng location = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
                             //googleMap.addMarker(new MarkerOptions().position(location).title("Usted está acá"));
+
+                            LatLng location;
+                            if(LugarEspecifico)
+                                location = new LatLng(Lat, Long);
+                            else
+                                location = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
                             googleMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+
                             // For zooming automatically to the location of the marker
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(15).build();
+                            CameraPosition cameraPosition= new CameraPosition.Builder().target(location).zoom(15).build();
                             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         }
                     }
@@ -229,6 +251,7 @@ public class Fragment_Mapa extends Fragment {
             JSONObject elemento = datos.getJSONObject(i);
             restaurante=new DatosRestaurante();
 
+            restaurante.setId(elemento.getString("id"));
             restaurante.setNombre(elemento.getString("name"));
             restaurante.setLatitud(Double.valueOf(elemento.getString("latitude")));
             restaurante.setLongitud(Double.valueOf(elemento.getString("longitude")));
@@ -236,7 +259,7 @@ public class Fragment_Mapa extends Fragment {
             restaurante.setTelefono(elemento.getString("phones_number"));
             restaurante.setCorreo(elemento.getString("email"));
             restaurante.setPrecio(elemento.getString("price"));
-            //restaurante.setTipoComida(elemento.getString(""));
+            restaurante.setTipoComida(elemento.getString("food_id"));
             restaurantesObtenidos.add(restaurante);
         }
         return restaurantesObtenidos;
@@ -259,6 +282,8 @@ public class Fragment_Mapa extends Fragment {
                 if(marker.getPosition().latitude==restaurante.getLatitud() && marker.getPosition().longitude==restaurante.getLongitud()){
                     Intent detalleRestaurante= new Intent(getContext(),Detalle_Restaurante.class);
                     detalleRestaurante.putExtra("getNombreUsuario",NombreUsuario);
+                    detalleRestaurante.putExtra("getidUsuario",IdUsuario);
+                    detalleRestaurante.putExtra("getIdRestaurante",restaurante.getId());
                     detalleRestaurante.putExtra("getNombre",restaurante.getNombre());
                     detalleRestaurante.putExtra("getHorario",restaurante.getHorario());
                     detalleRestaurante.putExtra("getCorreo",restaurante.getCorreo());

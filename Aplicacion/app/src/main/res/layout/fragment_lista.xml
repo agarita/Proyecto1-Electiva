@@ -19,27 +19,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/lblTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:text="Lista de Restaurantes"
-            android:textSize="35sp" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lblTitulo"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true">
-            <ListView
-                android:layout_width="wrap_content"
+             <ListView
+                android:id="@+id/lstRestaurantes"
+                android:layout_width="match_parent"
+                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content">
             </ListView>
-        </ScrollView>
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

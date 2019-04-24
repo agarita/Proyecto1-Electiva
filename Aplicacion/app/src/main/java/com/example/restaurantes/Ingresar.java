@@ -36,9 +36,12 @@ public class Ingresar extends AppCompatActivity {
         else {
             Conexion conexion = new Conexion();
             String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users.json", "GET").get();
-            if(UserExist(result,user.getText().toString(),pass.getText().toString())) {
+
+            String idUsuario=UserExist(result,user.getText().toString(),pass.getText().toString());
+            if(idUsuario!=null) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra("Correo",user.getText().toString());
+                intent.putExtra("idUsuario",idUsuario);
                 startActivity(intent);
             }
             else{
@@ -48,17 +51,17 @@ public class Ingresar extends AppCompatActivity {
 
     }
 
-    private boolean UserExist(String jsonDatos, String correo, String password) throws Exception {
+    private String UserExist(String jsonDatos, String correo, String password) throws Exception {
         JSONArray datos = new JSONArray(jsonDatos);
         Crypto crypto=new Crypto();
 
         for(int i = 0; i < datos.length(); i++){
             JSONObject elemento = datos.getJSONObject(i);
             if(elemento.getString("email").equals(correo) && crypto.decrypt(elemento.getString("password")).equals(password)){
-                return true;
+                return elemento.getString("id");
             }
         }
-        return false;
+        return null;
     }
 
     public void onBtnRegistrarseClicked(View view){

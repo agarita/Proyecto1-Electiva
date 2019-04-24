@@ -2,11 +2,11 @@ package com.example.restaurantes;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 
 import org.json.JSONArray;
@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity {
 
     Fragment fragment_nuevo;
-    String CorreoUsuario,NombreUsuario;
+    String CorreoUsuario,NombreUsuario,IdUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent i=getIntent();
         CorreoUsuario = i.getExtras().getString("Correo");
+        IdUsuario = i.getExtras().getString("idUsuario");
         NombreUsuario="";
 
         Conexion conexion = new Conexion();
@@ -58,10 +59,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void llamarMapaUbicacion(double Latitud, double Longitud, String IdUsuario, String NombreUsuario){
+        BottomNavigationView mainNav=findViewById(R.id.main_nav);
+
+        mainNav.setItemBackgroundResource(R.color.colorMapa);
+        fragment_nuevo = new Fragment_Mapa().newInstance(Latitud,Longitud,NombreUsuario,IdUsuario);
+        setFragment(fragment_nuevo);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
+        getSupportActionBar().setTitle("Mapa Restaurantes");
+    }
+
+
     private void funcionalidadMenu() {
         final BottomNavigationView mainNav=findViewById(R.id.main_nav);
 
-        fragment_nuevo = new Fragment_Mapa().newInstance(NombreUsuario);
+        fragment_nuevo = new Fragment_Mapa().newInstance(NombreUsuario,IdUsuario);
         setFragment(fragment_nuevo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
 
@@ -71,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.nav_mapa:
                         mainNav.setItemBackgroundResource(R.color.colorMapa);
-                        fragment_nuevo = new Fragment_Mapa().newInstance(NombreUsuario);
+                        fragment_nuevo = new Fragment_Mapa().newInstance(NombreUsuario,IdUsuario);
                         setFragment(fragment_nuevo);
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
                         getSupportActionBar().setTitle("Mapa Restaurantes");
@@ -79,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_lista:
                         mainNav.setItemBackgroundResource(R.color.colorLista);
-                        fragment_nuevo = new Fragment_Lista().newInstance();
+                        fragment_nuevo = new Fragment_Lista().newInstance(NombreUsuario,IdUsuario);
                         setFragment(fragment_nuevo);
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorLista)));
                         getSupportActionBar().setTitle("Lista Restaurantes");
@@ -95,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_perfil:
                         mainNav.setItemBackgroundResource(R.color.colorPerfil);
-                        fragment_nuevo = new Fragment_Perfil().newInstance();
+                        fragment_nuevo = new Fragment_Perfil().newInstance(NombreUsuario,CorreoUsuario);
                         setFragment(fragment_nuevo);
+                        getSupportActionBar().setTitle("Perfil");
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPerfil)));
 
                         return true;
