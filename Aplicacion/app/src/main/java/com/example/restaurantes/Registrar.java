@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -116,8 +116,9 @@ public class Registrar extends AppCompatActivity {
         String password = this.pass.getText().toString();
         String password_confirmation = this.passConf.getText().toString();
         if(!mail.isEmpty() && !nick.isEmpty() && !password.isEmpty() && !password_confirmation.isEmpty() && password.equals(password_confirmation)){
-            uploadImageS3(mail.replaceAll("\\s",""));
-            String urlImagen = "https://s3-us-west-1.amazonaws.com/apprestaurantes/avatarexample.jpg/users/"+mail.replaceAll("\\s","")+".jpg";
+            String nombreFoto=getYear()+getMonth()+getDay()+getHour()+getMinute()+getSecond();
+            uploadImageS3(nombreFoto.replaceAll("\\s",""));
+            String urlImagen = "https://s3-us-west-1.amazonaws.com/apprestaurantes/"/*users/"*/+nombreFoto.replaceAll("\\s","")+".jpg";
             Conexion conexion = new Conexion();
             Crypto crypto=new Crypto();
             JSONObject json_parametros = new JSONObject();
@@ -184,6 +185,7 @@ public class Registrar extends AppCompatActivity {
         });*/
 
     }
+
 
 
     // ------------------ Elegir imagen de usuario para mostrar ----------
@@ -395,17 +397,17 @@ public class Registrar extends AppCompatActivity {
 
     private void uploadImageS3(String nombreImagen){
         //Agregar el keypublico y local cuando se vaya a correr, borrarlo cuando se vaya a subir a github
-        AWSCredentials credentials = new AWSCredentials() {
+        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJZDXPE3HX6O6I45A","+tiUVU/REL7QbzVLOZtfczinQTGvYAnizvLYr927");/*AWSCredentials() {
             @Override
             public String getAWSAccessKeyId() {
-                return "AKIAJQG6UBBMDCKOPYWQ";
+                return "AKIAJZDXPE3HX6O6I45A";
             }
 
             @Override
             public String getAWSSecretKey() {
-                return "8qK2oBYOFzJvsU9YPYFS2euKW8GaYYygMLSKsh9F";
+                return "+tiUVU/REL7QbzVLOZtfczinQTGvYAnizvLYr927";
             }
-        };
+        };*/
         AmazonS3Client s3Client = new AmazonS3Client(credentials);
 
         TransferUtility transferUtility =
@@ -417,7 +419,7 @@ public class Registrar extends AppCompatActivity {
 
         // "jsaS3" will be the folder that contains the file
         TransferObserver uploadObserver =
-                transferUtility.upload("users/" + nombreImagen+".jpg",credentials.getAWSSecretKey(),new File(path_portada));
+                transferUtility.upload(/*"users/" +*/ nombreImagen+".jpg",credentials.getAWSSecretKey(),new File(path_portada));
 
         uploadObserver.setTransferListener(new TransferListener() {
 
@@ -436,7 +438,7 @@ public class Registrar extends AppCompatActivity {
 
             @Override
             public void onError(int id, Exception ex) {
-                // Handle errors
+                Toast.makeText(getApplicationContext(),"Error al subir la imagen",Toast.LENGTH_LONG).show();
             }
 
         });
@@ -493,9 +495,9 @@ public class Registrar extends AppCompatActivity {
         String Mes = String.valueOf(c.get(Calendar.MONTH)+1);
         return Mes;
     }
-    private int getYear(){
+    private String getYear(){
         Calendar c = Calendar.getInstance();
-        int Año = c.get(Calendar.YEAR);
+        String Año =  String.valueOf(c.get(Calendar.YEAR));
         return Año;
     }
     private String getSecond(){

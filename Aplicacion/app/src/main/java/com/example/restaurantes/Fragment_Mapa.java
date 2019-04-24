@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -45,10 +46,12 @@ public class Fragment_Mapa extends Fragment {
     ArrayList<DatosRestaurante> restaurantesObtenidos;
     ArrayList<Marker> marcadoresMapa = new ArrayList<>();
 
+    static String NombreUsuario;
 
-    public static Fragment_Mapa newInstance(/*TODO Recibir datos necesarios*/) {
+
+    public static Fragment_Mapa newInstance(String nombreUsuario) {
         Fragment_Mapa fragment = new Fragment_Mapa();
-        // TODO recibir datos necesarios
+        NombreUsuario=nombreUsuario;
         return fragment;
     }
 
@@ -252,7 +255,23 @@ public class Fragment_Mapa extends Fragment {
 
     private boolean clickEnMarcadorMapa(final Marker marker) {
         if (marker.getTag() == "BD") {
-            //TODO abrir detalle del restaurante
+            for(DatosRestaurante restaurante : restaurantesObtenidos){
+                if(marker.getPosition().latitude==restaurante.getLatitud() && marker.getPosition().longitude==restaurante.getLongitud()){
+                    Intent detalleRestaurante= new Intent(getContext(),Detalle_Restaurante.class);
+                    detalleRestaurante.putExtra("getNombreUsuario",NombreUsuario);
+                    detalleRestaurante.putExtra("getNombre",restaurante.getNombre());
+                    detalleRestaurante.putExtra("getHorario",restaurante.getHorario());
+                    detalleRestaurante.putExtra("getCorreo",restaurante.getCorreo());
+                    detalleRestaurante.putExtra("getLatitud",restaurante.getLatitud());
+                    detalleRestaurante.putExtra("getLongitud",restaurante.getLongitud());
+                    detalleRestaurante.putExtra("getPrecio",restaurante.getPrecio());
+                    detalleRestaurante.putExtra("getTelefono",restaurante.getTelefono());
+                    detalleRestaurante.putExtra("getTipoComida",restaurante.getTipoComida());
+                    startActivity(detalleRestaurante);
+                    return true;
+                }
+            }
+            return false;
         } else {
             new AlertDialog.Builder(getContext())
                     .setTitle("Agregar nuevo restaurante")

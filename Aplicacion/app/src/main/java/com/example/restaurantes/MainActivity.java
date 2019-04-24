@@ -1,5 +1,6 @@
 package com.example.restaurantes;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,22 +9,59 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
+
 public class MainActivity extends AppCompatActivity {
 
     Fragment fragment_nuevo;
+    String CorreoUsuario,NombreUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent i=getIntent();
+        CorreoUsuario = i.getExtras().getString("Correo");
+        NombreUsuario="";
+
+        Conexion conexion = new Conexion();
+        try {
+            String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users.json", "GET").get();
+            NombreUsuario=User(result,CorreoUsuario);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         funcionalidadMenu();
     }
+
+    private String User(String jsonDatos, String correo) throws Exception {
+        JSONArray datos = new JSONArray(jsonDatos);
+        Crypto crypto=new Crypto();
+
+        for(int i = 0; i < datos.length(); i++){
+            JSONObject elemento = datos.getJSONObject(i);
+            if(elemento.getString("email").equals(correo)){
+                return elemento.getString("name");
+            }
+        }
+        return "";
+    }
+
 
     private void funcionalidadMenu() {
         final BottomNavigationView mainNav=findViewById(R.id.main_nav);
 
-        fragment_nuevo = new Fragment_Mapa().newInstance();
+        fragment_nuevo = new Fragment_Mapa().newInstance(NombreUsuario);
         setFragment(fragment_nuevo);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
 
@@ -33,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.nav_mapa:
                         mainNav.setItemBackgroundResource(R.color.colorMapa);
-                        fragment_nuevo = new Fragment_Mapa().newInstance();
+                        fragment_nuevo = new Fragment_Mapa().newInstance(NombreUsuario);
                         setFragment(fragment_nuevo);
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorMapa)));
                         getSupportActionBar().setTitle("Mapa Restaurantes");

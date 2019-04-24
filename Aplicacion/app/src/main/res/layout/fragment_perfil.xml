@@ -55,7 +55,7 @@
             android:text="_Nombre_"
             android:textSize="25sp"/>
 
-        <TextView
+       <!-- <TextView
 
             android:id="@+id/lblEdad"
             android:layout_width="wrap_content"
@@ -73,13 +73,13 @@
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@id/lblEdad"
             android:text="_Edad_"
-            android:textSize="25sp"/>
+            android:textSize="25sp"/>-->
 
         <TextView
             android:id="@+id/lblCorreo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtEdad"
+            android:layout_below="@id/txtNombre"
             android:layout_marginTop="15dp"
             android:text="Correo: "
             android:textSize="25sp"/>
@@ -88,7 +88,7 @@
             android:id="@+id/txtCorreo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtEdad"
+            android:layout_below="@id/txtNombre"
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@id/lblCorreo"
             android:text="_Correo_"
