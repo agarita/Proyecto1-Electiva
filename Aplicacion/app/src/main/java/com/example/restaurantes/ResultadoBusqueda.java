@@ -22,7 +22,7 @@ public class ResultadoBusqueda extends AppCompatActivity {
     ArrayList<DatosRestaurante> restaurantesObtenidos=new ArrayList<>();
 
     String NombreUsuario,IdUsuario;
-    String Distancia=null,Precio=null,ClaveBusqueda=null,Calificacion=null, TipoComida=null;
+    String Distancia="",Precio="",ClaveBusqueda="",Calificacion="", TipoComida="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class ResultadoBusqueda extends AppCompatActivity {
     private ArrayList<DatosRestaurante> filtrarRestaurantes() {
         ArrayList<DatosRestaurante> restaurantes=new ArrayList<>();
         for(DatosRestaurante restaurante : restaurantesObtenidos){
-            if(ClaveBusqueda!=null && (restaurante.getNombre().toLowerCase().contains(ClaveBusqueda.toLowerCase())))
+            if(!ClaveBusqueda.isEmpty() && ClaveBusqueda!=null && (restaurante.getNombre().toLowerCase().contains(ClaveBusqueda.toLowerCase())))
                 restaurantes.add(restaurante);
         }
 

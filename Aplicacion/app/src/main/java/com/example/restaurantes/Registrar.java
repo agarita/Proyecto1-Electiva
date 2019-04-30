@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,8 +24,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -46,9 +50,6 @@ import java.util.Calendar;
 import java.util.regex.Pattern;
 
 public class Registrar extends AppCompatActivity {
-
-
-
     Spinner spedad;
     EditText user;
     EditText pass;
@@ -64,6 +65,48 @@ public class Registrar extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 5468;
     private File folder;
     private String FotoName;
+    private Boolean subirFoto=false;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_registrar);
+
+        AWSMobileClient.getInstance().initialize(this).execute();
+
+        pattern = Patterns.EMAIL_ADDRESS;
+        user = findViewById(R.id.txtUser);
+        pass = findViewById(R.id.txtPassword);
+        passConf = findViewById(R.id.txtPasswordConf);
+        correo = findViewById(R.id.txtCorreo);
+        Button btnregistro = findViewById(R.id.btnRegistrar);
+        btnregistro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    onBtnRegistrar();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+       /* spedad = (Spinner) findViewById(R.id.spnEdad);
+        llenarSpnEdad();
+        spedad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                edad=parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });*/
+
+    }
 
     public void onBtnRegistrar() throws Exception {
         if (user.getText().toString().matches("") || pass.getText().toString().matches("")
@@ -114,10 +157,13 @@ public class Registrar extends AppCompatActivity {
         String nick = this.user.getText().toString();
         String password = this.pass.getText().toString();
         String password_confirmation = this.passConf.getText().toString();
+        String urlImagen ="";
         if(!mail.isEmpty() && !nick.isEmpty() && !password.isEmpty() && !password_confirmation.isEmpty() && password.equals(password_confirmation)){
-            String nombreFoto=getYear()+getMonth()+getDay()+getHour()+getMinute()+getSecond();
-            //uploadImageS3(nombreFoto.replaceAll("\\s",""));
-            //String urlImagen = "https://s3-us-west-1.amazonaws.com/apprestaurantes/"/*users/"*/+nombreFoto.replaceAll("\\s","")+".jpg";
+            if(subirFoto) {
+                String nombreFoto = getYear() + getMonth() + getDay() + getHour() + getMinute() + getSecond();
+                uploadImageS3(nombreFoto.replaceAll("\\s", ""));
+                urlImagen = "https://s3.us-east-2.amazonaws.com/apprestaurantes-userfiles-mobilehub-1898934645/users/" + nombreFoto.replaceAll("\\s", "") + ".jpg";
+            }
             Conexion conexion = new Conexion();
             Crypto crypto=new Crypto();
             JSONObject json_parametros = new JSONObject();
@@ -125,12 +171,12 @@ public class Registrar extends AppCompatActivity {
             json_parametros.put("dateofbirth","");
             json_parametros.put("email",mail);
             json_parametros.put("password",crypto.encrypt(password));
-            json_parametros.put("url_imagen","");
+            json_parametros.put("url_imagen",urlImagen);
             String datos="{\"user\":"+json_parametros.toString()+"}";
             String  result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users","POST",datos/*json_parametros.toString()*/).get();
 
             if(result.equals("Created")) {
-               return true;
+                return true;
             }
         }
         return false;
@@ -147,43 +193,6 @@ public class Registrar extends AppCompatActivity {
         spedad.setAdapter(dataAdapter);
     }*/
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registrar);
-
-        pattern = Patterns.EMAIL_ADDRESS;
-        user = findViewById(R.id.txtUser);
-        pass = findViewById(R.id.txtPassword);
-        passConf = findViewById(R.id.txtPasswordConf);
-        correo = findViewById(R.id.txtCorreo);
-        Button btnregistro = findViewById(R.id.btnRegistrar);
-        btnregistro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    onBtnRegistrar();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-       /* spedad = (Spinner) findViewById(R.id.spnEdad);
-        llenarSpnEdad();
-        spedad.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                edad=parent.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
-
-    }
 
 
 
@@ -242,9 +251,10 @@ public class Registrar extends AppCompatActivity {
                 Uri filePath = data.getData();
                 if (null != filePath) {
                     try {
-                        //ImageView imgUsuario = findViewById(R.id.imagenUsuario);
-                        //imgUsuario.setImageURI(filePath);
+                        ImageView imgUsuario = findViewById(R.id.imagenUsuario);
+                        imgUsuario.setImageURI(filePath);
                         path_portada = getFilePath(this, filePath);
+                        subirFoto=true;
                         Log.d("PATH", filePath.getPath());
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -396,17 +406,7 @@ public class Registrar extends AppCompatActivity {
 
     private void uploadImageS3(String nombreImagen){
         //Agregar el keypublico y local cuando se vaya a correr, borrarlo cuando se vaya a subir a github
-        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAJZDXPE3HX6O6I45A","+tiUVU/REL7QbzVLOZtfczinQTGvYAnizvLYr927");/*AWSCredentials() {
-            @Override
-            public String getAWSAccessKeyId() {
-                return "AKIAJZDXPE3HX6O6I45A";
-            }
-
-            @Override
-            public String getAWSSecretKey() {
-                return "+tiUVU/REL7QbzVLOZtfczinQTGvYAnizvLYr927";
-            }
-        };*/
+        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZAY5RRIHXJIW5TPL","eQIJ+0e+2DKFKaEUIAy8XyL2Op8z1Uii7SbzZWhZ");
         AmazonS3Client s3Client = new AmazonS3Client(credentials);
 
         TransferUtility transferUtility =
@@ -416,16 +416,28 @@ public class Registrar extends AppCompatActivity {
                         .s3Client(s3Client)
                         .build();
 
-        // "jsaS3" will be the folder that contains the file
         TransferObserver uploadObserver =
-                transferUtility.upload(/*"users/" +*/ nombreImagen+".jpg",credentials.getAWSSecretKey(),new File(path_portada));
+                transferUtility.upload("users/" + nombreImagen + ".jpg", new File(path_portada));
+
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.progress_bar);
+        dialog.setTitle("State");
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT);
+
+        final ProgressBar progressBar= dialog.findViewById(R.id.progreso_img);
+
+        progressBar.setMax(100);
+        progressBar.setVisibility(View.VISIBLE);
+
+        //dialog.show();
 
         uploadObserver.setTransferListener(new TransferListener() {
 
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
-                    // Handle a completed download.
+                    //dialog.dismiss();
                 }
             }
 
@@ -433,6 +445,7 @@ public class Registrar extends AppCompatActivity {
             public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                 float percentDonef = ((float)bytesCurrent/(float)bytesTotal) * 100;
                 int percentDone = (int)percentDonef;
+                //progressBar.setProgress(percentDone);
             }
 
             @Override
