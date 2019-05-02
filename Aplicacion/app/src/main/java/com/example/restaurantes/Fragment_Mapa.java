@@ -119,10 +119,7 @@ public class Fragment_Mapa extends Fragment {
                             locationListener = new LocationListener() {
                                 @Override
                                 public void onLocationChanged(Location location) {
-                                    LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                    googleMap.clear();
-                                    googleMap.addMarker(new MarkerOptions().position(currentLocation).title("Usted está acá"));
-                                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+
                                 }
 
                                 @Override
@@ -268,7 +265,7 @@ public class Fragment_Mapa extends Fragment {
     protected Marker createMarker(double latitude, double longitude, String title, String snippet, String tag) {
         Marker m= googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
-                .anchor(0.5f, 0.5f)
+                //.anchor(0.5f, 0.5f)
                 .title(title)
                 .snippet(snippet));
         m.setTag(tag);
@@ -280,7 +277,7 @@ public class Fragment_Mapa extends Fragment {
         if (marker.getTag() == "BD") {
             for(DatosRestaurante restaurante : restaurantesObtenidos){
                 if(marker.getPosition().latitude==restaurante.getLatitud() && marker.getPosition().longitude==restaurante.getLongitud()){
-                    Intent detalleRestaurante= new Intent(getContext(),Detalle_Restaurante.class);
+                    Intent detalleRestaurante= new Intent(getContext(), DetalleRestaurante.class);
                     detalleRestaurante.putExtra("getNombreUsuario",NombreUsuario);
                     detalleRestaurante.putExtra("getidUsuario",IdUsuario);
                     detalleRestaurante.putExtra("getIdRestaurante",restaurante.getId());

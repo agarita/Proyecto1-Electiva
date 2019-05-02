@@ -92,7 +92,7 @@ public class ResultadoBusqueda extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 for(DatosRestaurante restaurante : restaurantesObtenidos){
                     if(view.getTag()==restaurante.getNombre()){
-                        Intent detalleRestaurante= new Intent(getApplicationContext(),Detalle_Restaurante.class);
+                        Intent detalleRestaurante= new Intent(getApplicationContext(), DetalleRestaurante.class);
                         detalleRestaurante.putExtra("getNombreUsuario",NombreUsuario);
                         detalleRestaurante.putExtra("getidUsuario",IdUsuario);
                         detalleRestaurante.putExtra("getIdRestaurante",restaurante.getId());

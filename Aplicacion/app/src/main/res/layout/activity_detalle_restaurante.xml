@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@android:id/tabhost"
-    tools:context=".Detalle_Restaurante">
+    tools:context=".DetalleRestaurante">
 
     <LinearLayout
         android:orientation="vertical"

@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
-public class Detalle_Restaurante extends AppCompatActivity {
+public class DetalleRestaurante extends AppCompatActivity {
 
     private FragmentTabHost mTabHost;
     String correoUsuario, NombreUsuario, IdUsuario;
@@ -68,7 +68,7 @@ public class Detalle_Restaurante extends AppCompatActivity {
         mTabHost.setup(this, getSupportFragmentManager(), R.id.contenido_tab);
 
         mTabHost.addTab(mTabHost.newTabSpec("Información").setIndicator("Información"),
-                detalleRestaurante.class, args2);
+                Fragment_Detalle_Restaurante.class, args2);
         mTabHost.addTab(mTabHost.newTabSpec("Comentarios").setIndicator("Comentarios"),
                 Comentarios.class, args1);
     }

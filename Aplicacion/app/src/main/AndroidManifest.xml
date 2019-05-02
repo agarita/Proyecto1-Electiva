@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".RestauranteMapa"></activity>
-        <activity android:name=".Detalle_Restaurante" />
+        <activity android:name=".DetalleRestaurante" />
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"

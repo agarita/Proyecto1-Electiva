@@ -78,7 +78,7 @@ public class Fragment_Lista extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 for(DatosRestaurante restaurante : restaurantesObtenidos){
                     if(view.getTag()==restaurante.getNombre()){
-                        Intent detalleRestaurante= new Intent(getContext(),Detalle_Restaurante.class);
+                        Intent detalleRestaurante= new Intent(getContext(), DetalleRestaurante.class);
                         detalleRestaurante.putExtra("getNombreUsuario",NombreUsuario);
                         detalleRestaurante.putExtra("getidUsuario",IdUsuario);
                         detalleRestaurante.putExtra("getIdRestaurante",restaurante.getId());

@@ -19,7 +19,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 
 
-public class detalleRestaurante extends Fragment {
+public class Fragment_Detalle_Restaurante extends Fragment {
     private View rootView;
 
 

@@ -18,28 +18,55 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!--<LinearLayout
+        <LinearLayout
             android:id="@+id/lyImg"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_width="250dp"
+            android:layout_height="150dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="2dp"
             android:orientation="horizontal">
 
-            <ImageView
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true" />
+
+                <com.viewpagerindicator.CirclePageIndicator
+                    android:id="@+id/indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="bottom"
+                    android:padding="10dip"/>
+                    <!--app:centered="true"
+                    app:fillColor="#ff0099"
+                    app:pageColor="#FF0000"
+                    app:snap="false" -->
+            </RelativeLayout>
+
+           <!-- <ImageView
                 android:id="@+id/imagenUsuario"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                app:srcCompat="@android:drawable/ic_menu_gallery" />
+                app:srcCompat="@android:drawable/ic_menu_gallery" />-->
 
-            <Button
-                android:id="@+id/btnAgregarImg"
-                android:onClick="onBtnCambiarImagen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Cambiar imagen"/>
-        </LinearLayout>-->
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAgregarImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lyImg"
+            android:layout_marginTop="8dp"
+            android:onClick="onBtnCambiarImagen"
+            android:text="Cambiar imagen"
+            android:layout_centerHorizontal="true"/>
 
 
         <EditText
@@ -49,7 +76,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_below="@+id/lyImg"
+            android:layout_below="@+id/btnAgregarImg"
             android:inputType="text"
             android:ems="10"
             android:hint="Nombre restaurante"

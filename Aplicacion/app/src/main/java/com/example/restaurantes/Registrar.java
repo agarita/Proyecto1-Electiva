@@ -57,7 +57,7 @@ public class Registrar extends AppCompatActivity {
     EditText correo;
     Pattern pattern;
     String edad="";
-    String path_portada;
+    String path_imagen;
 
     private static final int MY_CAMERA_PERMISSION_CODE = 8465;
     private static final int SELECT_PICTURE = 3513;
@@ -253,7 +253,7 @@ public class Registrar extends AppCompatActivity {
                     try {
                         ImageView imgUsuario = findViewById(R.id.imagenUsuario);
                         imgUsuario.setImageURI(filePath);
-                        path_portada = getFilePath(this, filePath);
+                        path_imagen = getFilePath(this, filePath);
                         subirFoto=true;
                         Log.d("PATH", filePath.getPath());
                     } catch (Exception e) {
@@ -417,7 +417,7 @@ public class Registrar extends AppCompatActivity {
                         .build();
 
         TransferObserver uploadObserver =
-                transferUtility.upload("users/" + nombreImagen + ".jpg", new File(path_portada));
+                transferUtility.upload("users/" + nombreImagen + ".jpg", new File(path_imagen));
 
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.progress_bar);
