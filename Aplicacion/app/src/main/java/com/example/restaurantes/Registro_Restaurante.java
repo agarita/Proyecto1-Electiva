@@ -3,42 +3,58 @@ package com.example.restaurantes;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-
-import static com.example.restaurantes.Registrar.getFilePath;
 
 public class Registro_Restaurante extends AppCompatActivity {
 
@@ -57,6 +73,8 @@ public class Registro_Restaurante extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_restaurante);
         Button btnRegistrar = findViewById(R.id.btnRegistrarRestaurante);
+
+        AWSMobileClient.getInstance().initialize(this).execute();
 
         Intent i = getIntent();
         latitud = i.getExtras().getDouble("getLatitud");
@@ -198,6 +216,7 @@ public class Registro_Restaurante extends AppCompatActivity {
             String  result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/restaurants","POST",datos/*json_parametros.toString()*/).get();
 
             if(result.equals("Created")) {
+                subirImagenes(nombreRes);
                 return true;
             }
             else{
@@ -206,6 +225,51 @@ public class Registro_Restaurante extends AppCompatActivity {
         }
         return false;
     }
+
+    private void subirImagenes(String nombreRes) throws JSONException, ExecutionException, InterruptedException {
+        Toast.makeText(this,"Subiendo imagenes...",Toast.LENGTH_LONG).show();
+        Conexion conexion = new Conexion();
+        String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/restaurants.json", "GET"/*json_parametros.toString()*/).get();
+        JSONArray datos = new JSONArray(result);
+
+        String id="";
+        for (int i = 0; i < datos.length(); i++) {
+            JSONObject elemento = datos.getJSONObject(i);
+            if (elemento.getString("name").equals(nombreRes)) {
+                id=elemento.getString("id");
+                i=datos.length();
+            }
+        }
+
+        boolean exito=true;
+        int cont=0;
+        for(String path : path_imagenes) {
+            conexion = new Conexion();
+            JSONObject json_parametros = new JSONObject();
+
+            String nombreFoto = getYear() + getMonth() + getDay() + getHour() + getMinute() + getSecond()+cont;
+            uploadImageS3(nombreFoto.replaceAll("\\s", ""),path);
+            String urlImagen = "https://s3.us-east-2.amazonaws.com/apprestaurantes-userfiles-mobilehub-1898934645/restaurantes/" + nombreFoto.replaceAll("\\s", "") + ".jpg";
+
+            json_parametros.put("url_resimage", urlImagen);
+            json_parametros.put("restaurant_id", id);
+            String datos1 = "{\"resimage\":" + json_parametros.toString() + "}";
+            String result1 = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/resimages", "POST", datos1/*json_parametros.toString()*/).get();
+
+            cont++;
+
+            if(!result1.equals("Created"))
+                exito=false;
+        }
+
+
+        if(exito)
+            Toast.makeText(this,"Imagenes guardadas",Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(this,"Error al guardar imagenes ",Toast.LENGTH_LONG).show();
+
+    }
+
 
     public void onBtnCambiarImagen(View view) {
         agregarImagen();
@@ -318,16 +382,13 @@ public class Registro_Restaurante extends AppCompatActivity {
                 }else
                 if (null != imagenes) {
                     try {
-                        List<String> pathimagenes=new ArrayList<>();
                         for(int i=0; i<imagenes.getItemCount();i++){
                             ClipData.Item imagen=imagenes.getItemAt(i);
                             Uri uri=imagen.getUri();
-                            pathimagenes.add(getFilePath(this,uri));
+                            path_imagenes.add(getFilePath(this,uri));
                             imagenesUri.add(uri);
 
                         }
-
-                        path_imagenes = pathimagenes;
 
                         actualizarImagenesSlider(imagenesUri);
 
@@ -354,11 +415,12 @@ public class Registro_Restaurante extends AppCompatActivity {
     private void actualizarImagenesSlider(ArrayList<Uri> imagenesUri) {
         final ViewPager mPager;
         final int[] currentPage = {0};
+
         final int NUM_PAGES = imagenesUri.size();
         mPager = (ViewPager) findViewById(R.id.pager);
 
 
-        mPager.setAdapter(new CustomSliderAdapter(Registro_Restaurante.this,imagenesUri));
+        mPager.setAdapter(new CustomSliderAdapter(Registro_Restaurante.this,imagenesUri,null));
 
 
         CirclePageIndicator indicator = (CirclePageIndicator)
@@ -368,7 +430,7 @@ public class Registro_Restaurante extends AppCompatActivity {
 
         final float density = getResources().getDisplayMetrics().density;
 
-//Set circle indicator radius
+        //Set circle indicator radius
         indicator.setRadius(5 * density);
 
         // Auto start of viewpager
@@ -408,6 +470,151 @@ public class Registro_Restaurante extends AppCompatActivity {
 
             }
         });
+    }
+
+    public static String getFilePath(Context context, Uri uri) throws URISyntaxException {
+        String selection = null;
+        String[] selectionArgs = null;
+        // Uri is different in versions after KITKAT (Android 4.4), we need to
+        if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context.getApplicationContext(), uri)) {
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                return Environment.getExternalStorageDirectory() + "/" + split[1];
+            } else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("image".equals(type)) {
+                    uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                selection = "_id=?";
+                selectionArgs = new String[]{
+                        split[1]
+                };
+            }
+        }
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {
+                    MediaStore.Images.Media.DATA
+            };
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver()
+                        .query(uri, projection, selection, selectionArgs, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    private void uploadImageS3(String nombreImagen,String path_imagen){
+        //Agregar el keypublico y local cuando se vaya a correr, borrarlo cuando se vaya a subir a github
+        BasicAWSCredentials credentials = new BasicAWSCredentials("AKIAZAY5RRIHXJIW5TPL","eQIJ+0e+2DKFKaEUIAy8XyL2Op8z1Uii7SbzZWhZ");
+        AmazonS3Client s3Client = new AmazonS3Client(credentials);
+
+        TransferUtility transferUtility =
+                TransferUtility.builder()
+                        .context(this)
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(s3Client)
+                        .build();
+
+        TransferObserver uploadObserver =
+                transferUtility.upload("restaurantes/" + nombreImagen + ".jpg", new File(path_imagen));
+
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.progress_bar);
+        dialog.setTitle("State");
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT);
+
+        final ProgressBar progressBar= dialog.findViewById(R.id.progreso_img);
+
+        progressBar.setMax(100);
+        progressBar.setVisibility(View.VISIBLE);
+
+        //dialog.show();
+
+        uploadObserver.setTransferListener(new TransferListener() {
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                if (TransferState.COMPLETED == state) {
+                    //dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                float percentDonef = ((float)bytesCurrent/(float)bytesTotal) * 100;
+                int percentDone = (int)percentDonef;
+                //progressBar.setProgress(percentDone);
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                Toast.makeText(getApplicationContext(),"Error al subir la imagen",Toast.LENGTH_LONG).show();
+            }
+
+        });
+
+        // If your upload does not trigger the onStateChanged method inside your
+        // TransferListener, you can directly check the transfer state as shown here.
+        if (TransferState.COMPLETED == uploadObserver.getState()) {
+            // Handle a completed upload.
+        }
+    }
+
+
+    //---------------------- Obtener Fecha ---------------------------
+    private String getHour(){
+        Calendar c = Calendar.getInstance();
+        String Hora = String.valueOf(c.get(Calendar.HOUR_OF_DAY));
+        return Hora;
+    }
+    private String getMinute(){
+        Calendar c = Calendar.getInstance();
+        String Minuto = String.valueOf(c.get(Calendar.MINUTE));
+        return Minuto;
+    }
+    private String getDay(){
+        Calendar c = Calendar.getInstance();
+        String Dia = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+        return Dia;
+    }
+    private String getMonth(){
+        Calendar c = Calendar.getInstance();
+        String Mes = String.valueOf(c.get(Calendar.MONTH)+1);
+        return Mes;
+    }
+    private String getYear(){
+        Calendar c = Calendar.getInstance();
+        String Año =  String.valueOf(c.get(Calendar.YEAR));
+        return Año;
+    }
+    private String getSecond(){
+        Calendar c = Calendar.getInstance();
+        String Segundo = String.valueOf(c.get(Calendar.SECOND));
+        return Segundo;
     }
 
 }

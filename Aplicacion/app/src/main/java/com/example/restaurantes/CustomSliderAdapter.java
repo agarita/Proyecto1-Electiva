@@ -9,19 +9,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class CustomSliderAdapter extends PagerAdapter {
 
 
     private ArrayList<Uri> IMAGES;
+    private ArrayList<String> PathIMAGES;
     private LayoutInflater inflater;
     private Context context;
+    private boolean conPath=false;
 
 
-    public CustomSliderAdapter(Context context,ArrayList<Uri> IMAGES) {
+    public CustomSliderAdapter(Context context,ArrayList<Uri> IMAGES,ArrayList<String> StringIMAGES) {
         this.context = context;
-        this.IMAGES=IMAGES;
+        if(StringIMAGES!=null){
+            this.PathIMAGES=StringIMAGES;
+            conPath=true;
+        }
+        else
+            this.IMAGES= IMAGES;
         inflater = LayoutInflater.from(context);
     }
 
@@ -32,7 +41,10 @@ public class CustomSliderAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return IMAGES.size();
+        if(conPath)
+            return PathIMAGES.size();
+        else
+            return IMAGES.size();
     }
 
     @Override
@@ -43,8 +55,10 @@ public class CustomSliderAdapter extends PagerAdapter {
         final ImageView imageView = (ImageView) imageLayout
                 .findViewById(R.id.image);
 
-
-        imageView.setImageURI(IMAGES.get(position));
+        if(conPath)
+            Picasso.with(context).load(PathIMAGES.get(position)).into(imageView);
+        else
+            imageView.setImageURI(IMAGES.get(position));
 
         view.addView(imageLayout, 0);
 
