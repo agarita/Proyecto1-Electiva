@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class Ingresar extends AppCompatActivity {
 
@@ -63,10 +64,10 @@ public class Ingresar extends AppCompatActivity {
         profileTracker.startTracking();
 
         LoginButton loginButton = findViewById(R.id.login_button);
+        loginButton.setLoginText("Ingresar con Facebook");
         FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.i("login", "El usuario ha ingresado con Facebook");
                 Profile profile = Profile.getCurrentProfile();
                 nextActivity(profile);
             }
@@ -121,6 +122,7 @@ public class Ingresar extends AppCompatActivity {
 
         for(int i = 0; i < datos.length(); i++){
             JSONObject elemento = datos.getJSONObject(i);
+            Log.i("login", elemento.getString("email")+"-"+correo);
             if(elemento.getString("email").equals(correo) && /*crypto.decrypt(*/elemento.getString("password").equals(password)){
                 return elemento.getString("id");
             }
@@ -162,10 +164,27 @@ public class Ingresar extends AppCompatActivity {
     }
 
     private void nextActivity(Profile profile) {
-        if(profile != null){
-            Log.i("login",profile.getFirstName());
-            Log.i("login",profile.getLastName());
-            Log.i("login",profile.getProfilePictureUri(200,200).toString());
+        Conexion conexion = new Conexion();
+
+        String correo="", result = null, idUsuario= null;
+        if(profile!=null){
+            correo = (profile.getFirstName()+profile.getLastName()+"@facebook.com").toLowerCase();
+        }
+        try { result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users.json", "GET").get();
+        } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
+        try { idUsuario = UserExist(result,correo,"");
+        } catch (Exception e) { e.printStackTrace(); }
+
+        if(idUsuario!=null) {
+            Log.i("login", idUsuario);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("Correo",correo);
+            intent.putExtra("idUsuario",idUsuario);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(this, "El usuario no existe.", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

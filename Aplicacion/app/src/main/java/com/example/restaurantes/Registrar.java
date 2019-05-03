@@ -123,6 +123,7 @@ public class Registrar extends AppCompatActivity {
         profileTracker.startTracking();
 
         LoginButton registerButton = findViewById(R.id.login_button);
+        registerButton.setLoginText("Registrar con Facebook");
         FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
