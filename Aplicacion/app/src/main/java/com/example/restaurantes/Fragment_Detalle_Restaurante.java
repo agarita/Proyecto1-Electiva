@@ -444,7 +444,7 @@ public class Fragment_Detalle_Restaurante extends Fragment {
         if(cont!=0)
             promedio=promedio/cont;
 
-        return String.valueOf(promedio);
+        return String.valueOf(Math.round(promedio));
     }
 
 

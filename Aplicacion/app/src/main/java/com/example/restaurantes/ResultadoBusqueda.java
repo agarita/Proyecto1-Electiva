@@ -3,6 +3,7 @@ package com.example.restaurantes;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,6 +39,9 @@ public class ResultadoBusqueda extends AppCompatActivity {
         Calificacion = i.getExtras().getString("getEstrellas");
         Precio = i.getExtras().getString("getPrecio");
 
+        Log.i("Info", String.format("TC: %s\n CB: %s\n D: %s\n C: %s\nP: %s\n",
+                TipoComida, ClaveBusqueda, Distancia, Calificacion, Precio));
+
         try {
             restaurantesObtenidos=ObtenerDatosRestaurantes();
         } catch (ExecutionException e) {
@@ -61,11 +65,45 @@ public class ResultadoBusqueda extends AppCompatActivity {
     private ArrayList<DatosRestaurante> filtrarRestaurantes() {
         ArrayList<DatosRestaurante> restaurantes=new ArrayList<>();
         for(DatosRestaurante restaurante : restaurantesObtenidos){
-            if(!ClaveBusqueda.isEmpty() && ClaveBusqueda!=null && (restaurante.getNombre().toLowerCase().contains(ClaveBusqueda.toLowerCase())))
-                restaurantes.add(restaurante);
+            try {
+                if(ClaveBusqueda==null || (restaurante.getNombre().toLowerCase().contains(ClaveBusqueda.toLowerCase()))) {
+                    if (TipoComida == null || restaurante.getTipoComida().contains((TipoComida))) {
+                        if(Precio == null || restaurante.getPrecio().contains(Precio)) {
+                            if(Calificacion == null || ObtenerCalificacion(restaurante.getId()).contains(Calificacion)){
+                                restaurantes.add(restaurante);
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException|ExecutionException|InterruptedException  e) {
+                e.printStackTrace();
+            }
         }
 
         return restaurantes;
+    }
+
+    private String ObtenerCalificacion(String IdRestaurante) throws JSONException, ExecutionException, InterruptedException {
+        Conexion conexion = new Conexion();
+        String resultBD = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/ratings.json", "GET").get();
+
+        JSONArray datos = new JSONArray(resultBD);
+
+        int cont=0;
+        int promedio=0;
+
+        for(int i = 0; i < datos.length(); i++){
+            JSONObject elemento = datos.getJSONObject(i);
+            if(elemento.getString("restaurant_id").equals(IdRestaurante)){
+                promedio=promedio+elemento.getInt("star");
+                cont=cont+1;
+            }
+        }
+
+        if(cont!=0)
+            promedio=promedio/cont;
+
+        return String.valueOf(Math.round(promedio));
     }
 
     private void poblarListViewRestaurantes(final ArrayList<DatosRestaurante> restaurantesObtenidos) {

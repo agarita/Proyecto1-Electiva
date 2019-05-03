@@ -9,12 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.facebook.CallbackManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +32,7 @@ public class Fragment_Busca extends Fragment {
 
     static String NombreUsuario,IdUsuario;
 
-    String Distancia=null,Precio=null,ClaveBusqueda=null,Calificacion=null, TipoComida=null;
+    String Distancia=null, Precio=null, ClaveBusqueda=null, Calificacion=null, TipoComida=null;
 
     public static Fragment_Busca newInstance(String nombreUsuario,String idUsuario) {
         Fragment_Busca fragment = new Fragment_Busca();
@@ -85,10 +88,12 @@ public class Fragment_Busca extends Fragment {
         });
     }
 
-    private void inicializarSpinnerTiposComidas() throws JSONException, ExecutionException, InterruptedException {
+    private void inicializarSpinnerTiposComidas() throws JSONException, ExecutionException,
+            InterruptedException {
         //Tipos comida
         Conexion conexion = new Conexion();
-        String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/foods.json", "GET"/*json_parametros.toString()*/).get();
+        String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/foods.json",
+                "GET"/*json_parametros.toString()*/).get();
         JSONArray datos = new JSONArray(result);
 
         spinnerArray =  new ArrayList<String>();
@@ -107,10 +112,6 @@ public class Fragment_Busca extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sItems = (Spinner) rootView.findViewById(R.id.spTipoComida);
         sItems.setAdapter(adapter);
-
-
-        //TODO cambiar tipo comida
-        //TipoComida
     }
 
     public void inicializarSeekBars(){
@@ -137,11 +138,11 @@ public class Fragment_Busca extends Fragment {
 
         //Costo de busqueda
         final SeekBar costoSeekbar = rootView.findViewById(R.id.seekCosto);
-        costoSeekbar.setMax(4);
+        costoSeekbar.setMax(3);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             costoSeekbar.setMin(1);
         }
-        costoSeekbar.setProgress(1);
+        costoSeekbar.setProgress(0);
 
         costoSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -156,12 +157,12 @@ public class Fragment_Busca extends Fragment {
 
         //Costo de estrellas
         final SeekBar estrellasSeekbar = rootView.findViewById(R.id.seekEstrellas);
-        estrellasSeekbar.setMax(6);
+        estrellasSeekbar.setMax(5);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             estrellasSeekbar.setMin(1);
         }
-        estrellasSeekbar.setProgress(6);
-        actualizarEstrellas(6);
+        estrellasSeekbar.setProgress(5);
+        actualizarEstrellas(5);
 
         estrellasSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -177,40 +178,61 @@ public class Fragment_Busca extends Fragment {
 
     private void actualizarEstrellas(int i) {
         TextView txtEstrellas = rootView.findViewById(R.id.lbEstrellaValor);
-        if(i==6)
+        if(i==5) {
             txtEstrellas.setText("Todas");
-        else
-            txtEstrellas.setText(Integer.toString(i));
+            Calificacion = null;
+        }
+        else {
+            Calificacion = Integer.toString(i+1);
+            txtEstrellas.setText(Calificacion);
+        }
     }
 
     private void actualizarCosto(int i) {
         TextView txtCosto= rootView.findViewById(R.id.lbCostoValor);
-        if(i==1)
+        if(i==0) {
             txtCosto.setText("Todos los precios");
-        else if(i==2)
+            Precio = null;
+        }
+        else if(i==1) {
             txtCosto.setText("Barato");
-        else if(i==3)
+            Precio = "Barato";
+        }
+        else if(i==2) {
             txtCosto.setText("Medio");
-        else if(i==4)
+            Precio = "Medio";
+        }
+        else if(i==3) {
             txtCosto.setText("Caro");
+            Precio = "Caro";
+        }
         else
             txtCosto.setText("Error");
     }
 
     private void actualizarDistancia(int i){
         TextView txtDistacia= rootView.findViewById(R.id.lbDistaciaValor);
-        if(i==10)
+        if(i==10) {
             txtDistacia.setText("Todo el mundo");
-        else
-            txtDistacia.setText(Integer.toString(i) + " KM");
+            Distancia = null;
+        }
+        else {
+            Distancia = Integer.toString(i+1);
+            txtDistacia.setText(Distancia + " KM");
+        }
     }
 
     public void buscar(){
         EditText clave= rootView.findViewById(R.id.txtBuscar);
+        Spinner tipoComida= rootView.findViewById(R.id.spTipoComida);
         if(clave.getText().toString().isEmpty())
             ClaveBusqueda=null;
         else
-            ClaveBusqueda=clave.getText().toString();
+            ClaveBusqueda = clave.getText().toString();
+        if(tipoComida.getSelectedItem().toString().contains("Todos los tipos"))
+            TipoComida=null;
+        else
+            TipoComida = String.valueOf(tipoComida.getAdapter().getItemId(tipoComida.getSelectedItemPosition()));
         Intent i =new Intent(getContext(),ResultadoBusqueda.class);
         i.putExtra("getNombreUsuario",NombreUsuario);
         i.putExtra("getidUsuario",IdUsuario);
