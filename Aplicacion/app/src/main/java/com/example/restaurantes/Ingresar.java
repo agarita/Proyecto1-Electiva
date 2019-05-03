@@ -103,7 +103,7 @@ public class Ingresar extends AppCompatActivity {
 
         for(int i = 0; i < datos.length(); i++){
             JSONObject elemento = datos.getJSONObject(i);
-            if(elemento.getString("email").equals(correo) && crypto.decrypt(elemento.getString("password")).equals(password)){
+            if(elemento.getString("email").equals(correo) && /*crypto.decrypt(*/elemento.getString("password").equals(password)){
                 return elemento.getString("id");
             }
         }

@@ -169,7 +169,7 @@ public class Registrar extends AppCompatActivity {
             json_parametros.put("name",nick);
             json_parametros.put("dateofbirth","");
             json_parametros.put("email",mail);
-            json_parametros.put("password",crypto.encrypt(password));
+            json_parametros.put("password",password/*crypto.encrypt(password)*/);
             json_parametros.put("url_imagen",urlImagen);
             String datos="{\"user\":"+json_parametros.toString()+"}";
             String  result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users","POST",datos/*json_parametros.toString()*/).get();

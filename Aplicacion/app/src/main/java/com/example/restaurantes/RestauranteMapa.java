@@ -80,10 +80,6 @@ public class RestauranteMapa extends AppCompatActivity {
                              LocationListener locationListener = new LocationListener() {
                                 @Override
                                 public void onLocationChanged(Location location) {
-                                    LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                    googleMap.clear();
-                                    googleMap.addMarker(new MarkerOptions().position(currentLocation).title("Usted está acá"));
-                                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
                                 }
 
                                 @Override

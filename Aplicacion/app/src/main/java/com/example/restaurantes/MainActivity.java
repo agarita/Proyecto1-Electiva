@@ -1,13 +1,22 @@
 package com.example.restaurantes;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -99,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.nav_busca:
                         mainNav.setItemBackgroundResource(R.color.colorBusqueda);
-                        fragment_nuevo = new Fragment_Busca().newInstance(NombreUsuario,IdUsuario);
+                       Ubicacion ubicacion=new Ubicacion();
+                       Location location=ubicacion.obtenerUbicacionActual();
+                        fragment_nuevo = new Fragment_Busca().newInstance(NombreUsuario,IdUsuario,location.getLatitude(),location.getLongitude());
                         setFragment(fragment_nuevo);
                         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorBusqueda)));
                         getSupportActionBar().setTitle("Búsqueda Restaurantes");
@@ -125,6 +136,67 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private class Ubicacion implements LocationListener {
+        public Ubicacion() {
+            super();
+        }
+
+        public Location obtenerUbicacionActual() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ActivityCompat.checkSelfPermission
+                        (getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        &&
+                        ActivityCompat.checkSelfPermission
+                                (getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "Debe aceptar el permiso para poder utilizar todas las funcionalidades", Toast.LENGTH_LONG).show();
+                    requestPermissions(new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    }, 1); // 1 is requestCode
+                    return null;
+                } else {
+                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+                    return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                }
+            }
+            return null;
+        }
+
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+            switch (requestCode) {
+
+                case 1:
+                    if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getApplicationContext(), "Permiso denegado", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Permiso aceptado", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
     }
 
     private void setFragment(android.support.v4.app.Fragment fragment){

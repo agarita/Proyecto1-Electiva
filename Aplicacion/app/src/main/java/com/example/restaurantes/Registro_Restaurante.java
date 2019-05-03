@@ -205,8 +205,8 @@ public class Registro_Restaurante extends AppCompatActivity {
             Conexion conexion = new Conexion();
             JSONObject json_parametros = new JSONObject();
             json_parametros.put("name",nombreRes);
-            json_parametros.put("longitude",latitud);
-            json_parametros.put("latitude",logitud);
+            json_parametros.put("longitude",logitud);
+            json_parametros.put("latitude",latitud);
             json_parametros.put("schedules",horarioRes);
             json_parametros.put("phones_number",telefonoRes);
             json_parametros.put("email",correoRes);
@@ -216,8 +216,7 @@ public class Registro_Restaurante extends AppCompatActivity {
             String  result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/restaurants","POST",datos/*json_parametros.toString()*/).get();
 
             if(result.equals("Created")) {
-                subirImagenes(nombreRes);
-                return true;
+                return subirImagenes(nombreRes);
             }
             else{
                 Toast.makeText(this,result,Toast.LENGTH_LONG).show();
@@ -226,7 +225,7 @@ public class Registro_Restaurante extends AppCompatActivity {
         return false;
     }
 
-    private void subirImagenes(String nombreRes) throws JSONException, ExecutionException, InterruptedException {
+    private boolean subirImagenes(String nombreRes) throws JSONException, ExecutionException, InterruptedException {
         Toast.makeText(this,"Subiendo imagenes...",Toast.LENGTH_LONG).show();
         Conexion conexion = new Conexion();
         String result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/restaurants.json", "GET"/*json_parametros.toString()*/).get();
@@ -263,11 +262,14 @@ public class Registro_Restaurante extends AppCompatActivity {
         }
 
 
-        if(exito)
-            Toast.makeText(this,"Imagenes guardadas",Toast.LENGTH_LONG).show();
-        else
-            Toast.makeText(this,"Error al guardar imagenes ",Toast.LENGTH_LONG).show();
-
+        if(exito) {
+            Toast.makeText(this, "Imagenes guardadas", Toast.LENGTH_LONG).show();
+            return true;
+        }
+        else {
+            Toast.makeText(this, "Error al guardar imagenes ", Toast.LENGTH_LONG).show();
+            return false;
+        }
     }
 
 

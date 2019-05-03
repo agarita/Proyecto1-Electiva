@@ -1,6 +1,7 @@
 package com.example.restaurantes;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +26,8 @@ public class ResultadoBusqueda extends AppCompatActivity {
 
     String NombreUsuario,IdUsuario;
     String Distancia="",Precio="",ClaveBusqueda="",Calificacion="", TipoComida="";
+    Double LatitudUsuario=null, LongitudUsuario=null;
+    Location ubicacionActual=new Location("");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,18 @@ public class ResultadoBusqueda extends AppCompatActivity {
         Distancia = i.getExtras().getString("getDistacia");
         Calificacion = i.getExtras().getString("getEstrellas");
         Precio = i.getExtras().getString("getPrecio");
+        LatitudUsuario = i.getExtras().getDouble("getLatitud");
+        LongitudUsuario = i.getExtras().getDouble("getLongitud");
+
+        if(LatitudUsuario!= null && LongitudUsuario!=null) {
+            ubicacionActual.setLatitude(LatitudUsuario);
+            ubicacionActual.setLongitude(LongitudUsuario);
+        }
+        else
+            if(Distancia!=null) {
+                Toast.makeText(this, "No se ha podido acceder a la ubicación actual", Toast.LENGTH_LONG).show();
+                Distancia=null;
+            }
 
         Log.i("Info", String.format("TC: %s\n CB: %s\n D: %s\n C: %s\nP: %s\n",
                 TipoComida, ClaveBusqueda, Distancia, Calificacion, Precio));
@@ -66,11 +82,17 @@ public class ResultadoBusqueda extends AppCompatActivity {
         ArrayList<DatosRestaurante> restaurantes=new ArrayList<>();
         for(DatosRestaurante restaurante : restaurantesObtenidos){
             try {
+                Location ubicacionRestaurante=new Location("");
+                ubicacionRestaurante.setLatitude(restaurante.getLatitud());
+                ubicacionRestaurante.setLongitude(restaurante.getLongitud());
+                int distanciaActual=Math.round(ubicacionActual.distanceTo(ubicacionRestaurante));
                 if(ClaveBusqueda==null || (restaurante.getNombre().toLowerCase().contains(ClaveBusqueda.toLowerCase()))) {
                     if (TipoComida == null || restaurante.getTipoComida().contains((TipoComida))) {
                         if(Precio == null || restaurante.getPrecio().contains(Precio)) {
                             if(Calificacion == null || ObtenerCalificacion(restaurante.getId()).contains(Calificacion)){
-                                restaurantes.add(restaurante);
+                                if(Distancia == null || Integer.valueOf(Distancia)>=distanciaActual)
+                                    restaurantes.add(restaurante);
+
                             }
                         }
                     }

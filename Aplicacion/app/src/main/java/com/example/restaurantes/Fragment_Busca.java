@@ -9,15 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.facebook.CallbackManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,11 +30,14 @@ public class Fragment_Busca extends Fragment {
     static String NombreUsuario,IdUsuario;
 
     String Distancia=null, Precio=null, ClaveBusqueda=null, Calificacion=null, TipoComida=null;
+    static Double LatitudUsuario=null, LongitudUsuario=null;
 
-    public static Fragment_Busca newInstance(String nombreUsuario,String idUsuario) {
+    public static Fragment_Busca newInstance(String nombreUsuario,String idUsuario, Double Latitud, Double Longitud) {
         Fragment_Busca fragment = new Fragment_Busca();
         NombreUsuario=nombreUsuario;
         IdUsuario=idUsuario;
+        LatitudUsuario = Latitud;
+        LongitudUsuario = Longitud;
         return fragment;
     }
 
@@ -241,6 +241,8 @@ public class Fragment_Busca extends Fragment {
         i.putExtra("getDistacia",Distancia);
         i.putExtra("getEstrellas",Calificacion);
         i.putExtra("getPrecio",Precio);
+        i.putExtra("getLatitud",LatitudUsuario);
+        i.putExtra("getLongitud",LongitudUsuario);
         startActivity(i);
     }
 
