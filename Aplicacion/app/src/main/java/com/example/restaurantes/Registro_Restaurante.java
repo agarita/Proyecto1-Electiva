@@ -374,7 +374,7 @@ public class Registro_Restaurante extends AppCompatActivity {
                 ClipData imagenes=data.getClipData();
                 if (null != filePath) {
                     try {
-                        path_imagenes.add(getFilePath(this, filePath));
+                        path_imagenes.add(getFilePath(getApplicationContext(), filePath));
                         imagenesUri.add(filePath);
                         actualizarImagenesSlider(imagenesUri);
                         Log.d("PATH", filePath.getPath());
@@ -387,7 +387,7 @@ public class Registro_Restaurante extends AppCompatActivity {
                         for(int i=0; i<imagenes.getItemCount();i++){
                             ClipData.Item imagen=imagenes.getItemAt(i);
                             Uri uri=imagen.getUri();
-                            path_imagenes.add(getFilePath(this,uri));
+                            path_imagenes.add(getFilePath(getApplicationContext(),uri));
                             imagenesUri.add(uri);
 
                         }
@@ -498,6 +498,11 @@ public class Registro_Restaurante extends AppCompatActivity {
                 selectionArgs = new String[]{
                         split[1]
                 };
+            }
+            else{
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                return Environment.getExternalStorageDirectory() + "/" + split[1];
             }
         }
         if ("content".equalsIgnoreCase(uri.getScheme())) {

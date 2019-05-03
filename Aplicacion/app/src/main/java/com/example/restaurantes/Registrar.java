@@ -299,6 +299,11 @@ public class Registrar extends AppCompatActivity {
                         split[1]
                 };
             }
+            else{
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                return Environment.getExternalStorageDirectory() + "/" + split[1];
+            }
         }
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             String[] projection = {

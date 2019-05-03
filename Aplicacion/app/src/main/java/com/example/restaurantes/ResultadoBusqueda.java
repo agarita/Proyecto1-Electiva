@@ -85,7 +85,7 @@ public class ResultadoBusqueda extends AppCompatActivity {
                 Location ubicacionRestaurante=new Location("");
                 ubicacionRestaurante.setLatitude(restaurante.getLatitud());
                 ubicacionRestaurante.setLongitude(restaurante.getLongitud());
-                int distanciaActual=Math.round(ubicacionActual.distanceTo(ubicacionRestaurante));
+                int distanciaActual=Math.round(ubicacionActual.distanceTo(ubicacionRestaurante))/1000;
                 if(ClaveBusqueda==null || (restaurante.getNombre().toLowerCase().contains(ClaveBusqueda.toLowerCase()))) {
                     if (TipoComida == null || restaurante.getTipoComida().contains((TipoComida))) {
                         if(Precio == null || restaurante.getPrecio().contains(Precio)) {

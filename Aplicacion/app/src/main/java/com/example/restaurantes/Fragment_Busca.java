@@ -140,7 +140,7 @@ public class Fragment_Busca extends Fragment {
         final SeekBar costoSeekbar = rootView.findViewById(R.id.seekCosto);
         costoSeekbar.setMax(3);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            costoSeekbar.setMin(1);
+            costoSeekbar.setMin(0);
         }
         costoSeekbar.setProgress(0);
 
