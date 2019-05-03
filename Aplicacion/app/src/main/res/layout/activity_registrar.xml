@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,53 +5,50 @@
     android:layout_height="match_parent"
     tools:context=".Registrar">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout2"
-        android:layout_width="395dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/lblTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:text="Registro"
-            android:textSize="45sp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/lyImg"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_below="@id/lblTitulo"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <ImageView
-                android:id="@+id/imagenUsuario"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                app:srcCompat="@android:drawable/ic_menu_gallery" />
-            <LinearLayout
+            <TextView
+                android:id="@+id/lblTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:orientation="vertical">
-                <Button
-                    android:id="@+id/btnAgregarImg"
-                    android:onClick="onBtnCambiarImagen"
+                android:layout_marginTop="25dp"
+                android:text="Registro"
+                android:textSize="45sp" />
+
+            <LinearLayout
+                android:id="@+id/lyImg"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imagenUsuario"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cambiar imagen"/>
-                <!--<LinearLayout
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btnAgregarImg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="onBtnCambiarImagen"
+                        android:text="Cambiar imagen" />
+                    <!--<LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -68,62 +64,59 @@
                         ></Spinner>
                 </LinearLayout>-->
 
+                </LinearLayout>
+
             </LinearLayout>
 
+            <EditText
+                android:id="@+id/txtUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:ems="10"
+                android:hint="@string/usuario"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/txtPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:hint="@string/contrase_a"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/txtPasswordConf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:hint="Confirmar Contraseña"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/txtCorreo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:hint="Correo"
+                android:inputType="textEmailAddress" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp" />
+
+            <Button
+                android:id="@+id/btnRegistrar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Registrar" />
         </LinearLayout>
+    </ScrollView>
 
-        <EditText
-            android:id="@+id/txtUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lyImg"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:ems="10"
-            android:hint="@string/usuario"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/txtPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtUser"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="@string/contrase_a"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/txtPasswordConf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtPassword"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="Confirmar Contraseña"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/txtCorreo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtPasswordConf"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="Correo"
-            android:inputType="textEmailAddress" />
-
-        <Button
-            android:id="@+id/btnRegistrar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_below="@id/txtCorreo"
-            android:layout_centerHorizontal="true"
-            android:text="Registrar"/>
-
-    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

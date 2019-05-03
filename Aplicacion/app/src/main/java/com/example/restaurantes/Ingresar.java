@@ -10,11 +10,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -26,7 +28,10 @@ import java.util.Arrays;
 
 public class Ingresar extends AppCompatActivity {
 
-    CallbackManager callbackManager;
+    private CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
+    private ProfileTracker profileTracker;
+
     EditText user;
     EditText pass;
     ProgressBar progressBar;
@@ -37,24 +42,33 @@ public class Ingresar extends AppCompatActivity {
         setContentView(R.layout.activity_ingresar);
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
-
-        callbackManager = CallbackManager.Factory.create();
         user = findViewById(R.id.txtUser);
         pass = findViewById(R.id.txtPassword);
 
-        final LoginButton loginButton = findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("public_profile","email","user_birthday"));
+        callbackManager = CallbackManager.Factory.create();
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken currentToken) {
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            }
+        };
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                nextActivity(newProfile);
+            }
+        };
+
+        accessTokenTracker.startTracking();
+        profileTracker.startTracking();
+
+        LoginButton loginButton = findViewById(R.id.login_button);
+        FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                String accessToken = loginResult.getAccessToken().getToken();
-                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        getData(object);
-                    }
-                });
+                Log.i("login", "El usuario ha ingresado con Facebook");
+                Profile profile = Profile.getCurrentProfile();
+                nextActivity(profile);
             }
 
             @Override
@@ -67,8 +81,12 @@ public class Ingresar extends AppCompatActivity {
                 Log.i("login", "Ha habido un error en el ingreso");
                 Log.e("login", error.toString());
             }
-        });
-        if(AccessToken.getCurrentAccessToken() != null){
+        };
+
+        loginButton.setReadPermissions(Arrays.asList("user_friends", "public_profile"));
+        loginButton.registerCallback(callbackManager, callback);
+
+        if (AccessToken.getCurrentAccessToken() != null) {
             Log.i("login", "Ha hecho login exitosamente.");
         }
     }
@@ -120,22 +138,34 @@ public class Ingresar extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /* Cosas de Facebook */
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Profile profile = Profile.getCurrentProfile();
+        nextActivity(profile);
+    }
+
+    @Override
+    protected void onPause(){ super.onPause(); }
+
+    protected void onStop(){
+        super.onStop();
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
         callbackManager.onActivityResult(requestCode,resultCode,data);
     }
 
-
-
-    private void getData(JSONObject object) {
-        //Aquí se guarda la info del facebook
-        //Foto perfil, correo y fecha nacimiento.
-        try {
-            Log.i("login", object.getString("email"));
-            Log.i("login", object.getString("user_birthday"));
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private void nextActivity(Profile profile) {
+        if(profile != null){
+            Log.i("login",profile.getFirstName());
+            Log.i("login",profile.getLastName());
+            Log.i("login",profile.getProfilePictureUri(200,200).toString());
         }
     }
 }

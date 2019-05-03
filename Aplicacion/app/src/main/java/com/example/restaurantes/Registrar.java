@@ -38,6 +38,15 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +54,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class Registrar extends AppCompatActivity {
@@ -66,6 +77,9 @@ public class Registrar extends AppCompatActivity {
     private String FotoName;
     private Boolean subirFoto=false;
 
+    private CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
+    private ProfileTracker profileTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +104,47 @@ public class Registrar extends AppCompatActivity {
                 }
             }
         });
+
+        callbackManager = CallbackManager.Factory.create();
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken currentToken) {
+
+            }
+        };
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                nextActivity(newProfile);
+            }
+        };
+
+        accessTokenTracker.startTracking();
+        profileTracker.startTracking();
+
+        LoginButton registerButton = findViewById(R.id.login_button);
+        FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.i("registrar", "El usuario se ha registrado con Facebook");
+                Profile profile = Profile.getCurrentProfile();
+                nextActivity(profile);
+            }
+
+            @Override
+            public void onCancel() {
+                Log.i("registrar", "El usuario cancelo el registro");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.i("registrar", "Ha habido un error en el registro");
+                Log.e("registrar", error.toString());
+            }
+        };
+
+        registerButton.setReadPermissions(Arrays.asList("user_friends", "public_profile"));
+        registerButton.registerCallback(callbackManager, callback);
 
        /* spedad = (Spinner) findViewById(R.id.spnEdad);
         llenarSpnEdad();
@@ -146,8 +201,6 @@ public class Registrar extends AppCompatActivity {
         }
         return false;
     }
-
-
 
     private boolean RegistrarUsuarioBD() throws Exception {
         String mail = this.correo.getText().toString();
@@ -244,6 +297,8 @@ public class Registrar extends AppCompatActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        callbackManager.onActivityResult(requestCode,resultCode,data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
 
@@ -480,7 +535,56 @@ public class Registrar extends AppCompatActivity {
 
     }
 
+    //---------------------- Cosas de Facebook ---------------------------
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Profile profile = Profile.getCurrentProfile();
+        nextActivity(profile);
+    }
 
+    @Override
+    protected void onPause(){ super.onPause(); }
+
+    protected void onStop(){
+        super.onStop();
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
+
+    private void nextActivity(Profile profile){
+        Conexion conexion = new Conexion();
+        JSONObject json_parametros = new JSONObject();
+        String nombre = "", apellido = "", correo, user, password = "", urlImagen="";
+        if(profile != null){
+
+            nombre = profile.getFirstName();
+            apellido = profile.getLastName();
+            urlImagen = profile.getProfilePictureUri(200,200).toString();
+        }
+
+        correo = nombre+apellido+"@facebook.com";
+        user = nombre+" "+apellido;
+
+        try {
+            json_parametros.put("name",user);
+            json_parametros.put("dateofbirth","");
+            json_parametros.put("email",correo);
+            json_parametros.put("password",password);
+            json_parametros.put("url_imagen",urlImagen);
+        } catch (JSONException e) { e.printStackTrace(); }
+        String datos="{\"user\":"+json_parametros.toString()+"}";
+        String  result = null;
+        try { result = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/users","POST",datos).get();
+        } catch (ExecutionException|InterruptedException e) { e.printStackTrace(); }
+
+        if(result.equals("Created")) {
+            Log.i("registrar","Se ha creado el usuario.");
+            return;
+        }
+        Log.i("registrar","No se pudo crear.");
+        return;
+    }
 
     //---------------------- Obtener Fecha ---------------------------
     private String getHour(){

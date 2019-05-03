@@ -2,10 +2,10 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lyIngreso"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Ingresar"
-    android:id="@+id/lyIngreso">
+    tools:context=".Ingresar">
 
     <ProgressBar
         android:id="@+id/progressbar"
@@ -18,96 +18,90 @@
         android:backgroundTint="#FFFFFF"
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
-        android:visibility="invisible"
         android:max="100"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+    <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/lblTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="75dp"
-            android:text="@string/bienvenido"
-            android:textSize="45sp" />
-
-        <EditText
-            android:id="@+id/txtUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/lblTitulo"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:ems="10"
-            android:hint="Correo"
-            android:inputType="textPersonName" />
-        <EditText
-            android:id="@+id/txtPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtUser"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="@string/contrase_a"
-            android:inputType="textPassword" />
-
-        <Button
-            android:id="@+id/btnIngresar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtPassword"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:onClick="onBtnIngresarClicked"
-            android:text="@string/ingresar" />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btnIngresar"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"/>
-
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="25dp"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/btnRegistarse"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lblTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/registrarse"
-                android:onClick="onBtnRegistrarseClicked"/>
+                android:layout_marginTop="50dp"
+                android:text="@string/bienvenido"
+                android:textSize="45sp" />
+
+            <EditText
+                android:id="@+id/txtUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:ems="10"
+                android:hint="Correo"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/txtPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:hint="@string/contrase_a"
+                android:inputType="textPassword" />
 
             <Button
-                android:id="@+id/btnRecuperarPass"
+                android:id="@+id/btnIngresar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/recuperarPass"
-                android:onClick="onBtnRecuperarPassClicked"/>
+                android:layout_marginTop="50dp"
+                android:onClick="onBtnIngresarClicked"
+                android:text="@string/ingresar" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnRegistarse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onBtnRegistrarseClicked"
+                    android:text="@string/registrarse" />
+
+                <Button
+                    android:id="@+id/btnRecuperarPass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onBtnRecuperarPassClicked"
+                    android:text="@string/recuperarPass" />
+            </LinearLayout>
+
         </LinearLayout>
+    </ScrollView>
 
-    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
