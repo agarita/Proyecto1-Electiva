@@ -131,7 +131,7 @@ public class Fragment_Detalle_Restaurante extends Fragment {
         String calificacion = "";
         try {
             tipoComida = ObtenerTipoComida(TipoComida);
-            calificacion = ObtenerCalificacion(IdUsuario, IdRestaurante);
+            calificacion = ObtenerCalificacion(IdRestaurante);
             descargarImagenesRestaurante(IdRestaurante);
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -424,14 +424,14 @@ public class Fragment_Detalle_Restaurante extends Fragment {
         startActivity(mapa);
     }
 
-    private String ObtenerCalificacion(String IdUsuario, String IdRestaurante) throws JSONException, ExecutionException, InterruptedException {
+    private String ObtenerCalificacion(String IdRestaurante) throws JSONException, ExecutionException, InterruptedException {
         Conexion conexion = new Conexion();
         String resultBD = conexion.execute("https://shrouded-savannah-17544.herokuapp.com/ratings.json", "GET").get();
 
         JSONArray datos = new JSONArray(resultBD);
 
         int cont=0;
-        int promedio=0;
+        float promedio=0;
 
         for(int i = 0; i < datos.length(); i++){
             JSONObject elemento = datos.getJSONObject(i);
